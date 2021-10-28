@@ -26,7 +26,7 @@ namespace Frappe.Net
             //client.Settings.DefaultHeaders.Add("Content-Type", "application/json");
         }
 
-        public async Task<Frappe> UseTokenAsync(string apiSecret, string apiKey) {
+        public async Task<Frappe> UseTokenAsync(string apiKey, string apiSecret) {
             client.Settings.DefaultHeaders.Add("Authorization", $"token {apiKey}:{apiSecret}");
             // validates the token by getting logged user
             try
@@ -35,10 +35,13 @@ namespace Frappe.Net
             }
             catch (HttpException e)
             {
-                if (e.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                if (e.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    client.Settings.DefaultHeaders.Remove("Authorization");
-                    throw new AuthenticationException("Authentication failed");
+                    throw new AuthenticationException("Invalid login credential");
+                }
+                if (e.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                {
+                    throw new AuthenticationException("Server error");
                 }
             }
             return this;
@@ -56,7 +59,11 @@ namespace Frappe.Net
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    throw new AuthenticationException("Authentication failed");
+                    throw new AuthenticationException("Invalid login credential");
+                }
+                if (e.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                {
+                    throw new AuthenticationException("Server error");
                 }
             }
 

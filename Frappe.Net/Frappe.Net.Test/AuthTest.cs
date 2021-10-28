@@ -34,5 +34,30 @@ namespace Frappe.Net.Test
             var user = await frappe.GetLoggedUserAsync();
             Assert.AreEqual("user@domail.com", user);
         }
+
+        [TestMethod]
+        public async Task TestIfWrongTokenReturnsExceptionAsync()
+        {
+            bool exceptionThrowed = false;
+            try
+            {
+                var frappe = new Frappe(BASE_URL);
+                await frappe.UseTokenAsync("secret", "key");
+            }
+            catch (AuthenticationException e)
+            {
+                exceptionThrowed = true;
+            }
+            Assert.IsTrue(exceptionThrowed, $"An {nameof(AuthenticationException)} must be thrown");
+        }
+
+        [TestMethod]
+        public async Task TestIfCorrectTokenAsync()
+        {
+            var frappe = new Frappe(BASE_URL);
+            await frappe.UseTokenAsync("e18faade3a512de", "13706560c7c6583");
+            var user = await frappe.GetLoggedUserAsync();
+            Assert.AreEqual("user@domail.com", user);
+        }
     }
 }
