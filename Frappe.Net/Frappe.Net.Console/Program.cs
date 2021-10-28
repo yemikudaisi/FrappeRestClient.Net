@@ -14,18 +14,16 @@ namespace Frappe.Net.Console
             var baseUrl = "http://172.18.245.101:8000";
             var apiKey = "ff38e60e1ef4c35";
             var apiSecret = "346923835a2f4e0";
-            //var client = new TinyRestClient(new HttpClient(), $"{baseUrl}/api/method");
-            //client.Settings.DefaultHeaders.AddBearer($"{apiKey}:{apiSecret}");
-            //client.Settings.DefaultHeaders.Add("Authorization", $"token {apiKey}:{apiSecret}");
 
             try {
-                //var respone = await client.GetRequest("frappe.auth.get_logged_user")
-                //    .ExecuteAsStringAsync();
                 var frappe = new Frappe(baseUrl);
-                //await frappe.UsePasswordAsync("user@domail.com", "user@domail");
-                await frappe.UsePasswordAsync(apiKey, apiSecret);
-                var user = await frappe.GetLoggedUserAsync();
-                console.WriteLine(user);
+                await frappe.UseTokenAsync(apiKey, apiSecret);
+                string[] fields = { "name", "description" };
+                string[,] filters = { { "status", "=", "Open" } };
+                var todos = await frappe.Db.GetListAsync("ToDo", fields:fields, filters:filters);
+                foreach ( var t in todos) {
+                    console.WriteLine($"{t.name} -> {t.description}");
+                }
             }
             catch (HttpException e)
             {

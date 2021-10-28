@@ -8,27 +8,61 @@ using Tiny.RestClient;
 
 namespace Frappe.Net
 {
-    public class Frappe
+    /// <summary>
+    /// Entry class in to the frappe REST client
+    /// manages all communication to the remote Frappe Framework deployment
+    /// 
+    /// </summary>
+    public class Frappe : JsonObjectParser
     {
         string _baseUrl;
-        string _userName;
-        string _password;
         TinyRestClient client;
-        bool _isAuthenticated;
-        bool _isPassword;
-        bool _isToken;
-        bool _isAccessToken;
+        private bool _isAuthenticated;
+        private bool _isPassword;
+        private bool _isToken;
+        private bool _isAccessToken;
+        private Db _db;
+        private const string METHOD_PATH = "method/";
+        public Db Db { get =>_db; }
+        public bool IsAuthenticated { get => _isAuthenticated; set => _isAuthenticated = value; }
 
         public Frappe(string baseUrl) {
             _baseUrl = baseUrl;
-            client = new TinyRestClient(new HttpClient(), $"{baseUrl}/api/method");
-            //client.Settings.DefaultHeaders.Add("Accept", "application/json");
-            //client.Settings.DefaultHeaders.Add("Content-Type", "application/json");
+            client = new TinyRestClient(new HttpClient(), $"{baseUrl}/api");
+            _db = new Db(client);
+        }
+
+        public async Task<Frappe> UseAccessTokenAsync(string accessToken)
+        {
+            // TODO: Setup frappe access token service
+            ClearAuthorization();
+            client.Settings.DefaultHeaders.Add("Authorization", $"Bearer {accessToken}");
+
+            // validation
+            try
+            {
+                await this.GetLoggedUserAsync();
+                this._isToken = true;
+            }
+            catch (HttpException e)
+            {
+                if (e.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    throw new AuthenticationException("Invalid login credential");
+                }
+                if (e.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                {
+                    throw new AuthenticationException("Server error");
+                }
+            }
+            return this;
         }
 
         public async Task<Frappe> UseTokenAsync(string apiKey, string apiSecret) {
+            ClearAuthorization();
             client.Settings.DefaultHeaders.Add("Authorization", $"token {apiKey}:{apiSecret}");
-            // validates the token by getting logged user
+
+            // validation
             try
             {
                 await this.GetLoggedUserAsync();
@@ -44,15 +78,18 @@ namespace Frappe.Net
                     throw new AuthenticationException("Server error");
                 }
             }
-            return this;
 
+            _isAccessToken = true;
+            _isAuthenticated = true;
+            return this;
         }
 
         public async Task<Frappe> UsePasswordAsync(string email, string password)
         {
+            ClearAuthorization();
             try
             {
-                await client.PostRequest("login", new EmailPasswordPair() { usr = email, pwd = password })
+                await client.PostRequest(getUri("login"), new EmailPasswordPair() { usr = email, pwd = password })
                     .ExecuteAsStringAsync();
             }
             catch (HttpException e)
@@ -73,14 +110,26 @@ namespace Frappe.Net
         }
 
         public async Task<string> GetLoggedUserAsync() {
-            var response =  await client.GetRequest("frappe.auth.get_logged_user")
+            var response =  await client.GetRequest(getUri("frappe.auth.get_logged_user"))
                     .ExecuteAsStringAsync();
-            return ToDynamic(response).message;
+            return ToObject(response).message;
         }
 
-        private dynamic ToDynamic(string json) {
-            return JObject.Parse(json);
+        private void ClearAuthorization() {
+            client.Settings.DefaultHeaders.Remove("Authorization");
+            _isAuthenticated = false;
+            _isToken = false;
+            _isPassword = false;
+            _isAccessToken = false;
         }
 
+        public void Logout()
+        {
+            ClearAuthorization();
+        }
+
+        private string getUri(string method) {
+            return METHOD_PATH + method;
+        }
     }
 }

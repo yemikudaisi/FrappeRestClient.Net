@@ -14,16 +14,14 @@ namespace Frappe.Net.Test
             bool exceptionThrowed = false;
             try
             {
-                //var respone = await client.GetRequest("frappe.auth.get_logged_user")
-                //    .ExecuteAsStringAsync();
                 var frappe = new Frappe(BASE_URL);
                 await frappe.UsePasswordAsync("wrong", "details");
             }
-            catch (AuthenticationException e)
+            catch (AuthenticationException)
             {
                 exceptionThrowed = true;
             }
-            Assert.IsTrue(exceptionThrowed, $"An {nameof(AuthenticationException)} must be thrown");
+            Assert.IsTrue(exceptionThrowed, $"An {nameof(AuthenticationException)} must be thrown when wrong login credentials are supplied");
         }
 
         [TestMethod]
@@ -36,7 +34,7 @@ namespace Frappe.Net.Test
         }
 
         [TestMethod]
-        public async Task TestIfWrongTokenReturnsExceptionAsync()
+        public async Task TestIfWrongTokenThrowsExceptionAsync()
         {
             bool exceptionThrowed = false;
             try
@@ -44,7 +42,7 @@ namespace Frappe.Net.Test
                 var frappe = new Frappe(BASE_URL);
                 await frappe.UseTokenAsync("secret", "key");
             }
-            catch (AuthenticationException e)
+            catch (AuthenticationException)
             {
                 exceptionThrowed = true;
             }
@@ -55,9 +53,40 @@ namespace Frappe.Net.Test
         public async Task TestIfCorrectTokenAsync()
         {
             var frappe = new Frappe(BASE_URL);
-            await frappe.UseTokenAsync("e18faade3a512de", "13706560c7c6583");
+            await frappe.UseTokenAsync("ff38e60e1ef4c35", "346923835a2f4e0");
             var user = await frappe.GetLoggedUserAsync();
-            Assert.AreEqual("user@domail.com", user);
+            Assert.AreEqual("yemikudaisi@gmail.com", user);
+        }
+
+        [TestMethod]
+        public void TestIfWrongAccessTokenThrowsExceptionAsync()
+        {
+            Assert.IsTrue(false);
+        }
+
+        [TestMethod]
+        public void TestIfCorrectAccessTokenAsync()
+        {
+            Assert.IsTrue(false);
+        }
+
+        [TestMethod]
+        public async Task TestIsLoggedOutAsync() {
+            var frappe = new Frappe(BASE_URL);
+            await frappe.UseTokenAsync("ff38e60e1ef4c35", "346923835a2f4e0");
+            frappe.Logout();
+
+            bool exceptionThrown = false;
+            try
+            {
+                var user = await frappe.GetLoggedUserAsync();
+
+            }
+            catch (Tiny.RestClient.HttpException)
+            {
+                exceptionThrown = true;
+            }
+            Assert.IsTrue(exceptionThrown, $"An {nameof(Tiny.RestClient.HttpException)} must be thrown when {nameof(Frappe)} is logged out");
         }
     }
 }
