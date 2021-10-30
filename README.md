@@ -58,7 +58,38 @@ Console.WriteLine(user); // administrator
 
 The methods implemented corellates to RESTful requests that are mapped to the `/api/resource` in Frappe. Also, some ```frappe.client``` functions are implemented here.
 
-#### Get List
+#### Listing Documents
+
+To get a list of records of a DocType us ```Frappe.Db.GetListAsync()```
+
+```cs
+var frappe = new Frappe(baseUrl);
+await frappe.UseTokenAsync(apiKey, apiSecret);
+string[] fields = { 
+    "name", 
+    "description",
+    "status"
+};
+                
+string[,] filters = { 
+    { 
+        "status", "=", "Open" 
+    } 
+};
+
+var todos = await frappe.Db.GetListAsync(
+    "ToDo", 
+    fields:fields, 
+    filters:filters,
+    orderBy: "modified desc"
+);
+
+foreach ( var t in todos) {
+    console.WriteLine($"{t.name} -> {t.description} : {t.status}");
+}
+```
+
+By default Frappe will return 20 records and will only fetch the name of the records unless fields  supplied. 
 
 #### Get Count
 
