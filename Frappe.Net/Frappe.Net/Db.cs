@@ -156,11 +156,35 @@ namespace Frappe.Net
         /// Insert a document
         /// 
         /// </summary>
-        /// <param name="docName">dictionary to be inserted</param>
+        /// <param name="doc">dictionary to be inserted</param>
         /// <returns></returns>
         public async Task<dynamic> InsertAsync(Dictionary<string, object> doc) {
             var request = client.PostRequest("frappe.client.insert")
                 .AddQueryParameter("doc", JsonConvert.SerializeObject(doc));
+            string response = "";
+
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return ToObject(response).message;
+        }
+
+        /// <summary>
+        /// Insert multiple document
+        /// 
+        /// </summary>
+        /// <param name="docs">List containing dictionaries to be inserted</param>
+        /// <returns></returns>
+        public async Task<dynamic> InsertManyAsync(Dictionary<string, object>[] docs)
+        {
+            var request = client.PostRequest("frappe.client.insert_many")
+                .AddQueryParameter("docs", JsonConvert.SerializeObject(docs));
             string response = "";
 
             try

@@ -62,13 +62,33 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestInsertAsync()
         {
+            var desc = "more inserted dictionary";
             var frappe = new Frappe(config["baseUrl"], true);
             var doc = await frappe.UsePasswordAsync(config["adminUser"], config["adminPassword"]).Result
                 .Db.InsertAsync(new Dictionary<string, object> {
                     { "doctype", "ToDo"},
-                    { "description","inserted dictionary"}
+                    { "description",desc}
                 });
-            Assert.AreEqual(doc.description.ToObject<String>(), "inserted dictionary");
+            Assert.AreEqual(doc.description.ToObject<String>(), desc);
+        }
+
+        [TestMethod]
+        public async Task TestInsertManyAsync()
+        {
+            var frappe = new Frappe(config["baseUrl"], true);
+            Dictionary<string, object>[] manyDocs = {
+                new Dictionary<string, object> {
+                    { "doctype", "ToDo"},
+                    { "description","First insert"}
+                },
+                new Dictionary<string, object> {
+                    { "doctype", "ToDo"},
+                    { "description","second insert"}
+                }
+            };
+            var docs = await frappe.UsePasswordAsync(config["adminUser"], config["adminPassword"]).Result
+                .Db.InsertManyAsync(manyDocs);
+            Assert.AreEqual((int)docs.Count, 2);
         }
     }
 }

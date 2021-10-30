@@ -45,6 +45,12 @@ namespace Frappe.Net
             BasicConfigurator.Configure();
         }
 
+        /// <summary>
+        /// Login to Frappe sight using access token
+        /// 
+        /// </summary>
+        /// <param name="accessToken">The apps access token</param>
+        /// <returns></returns>
         public async Task<Frappe> UseAccessTokenAsync(string accessToken)
         {
             // TODO: Setup frappe access token service
@@ -71,6 +77,13 @@ namespace Frappe.Net
             return this;
         }
 
+        /// <summary>
+        /// Login to a Frappe site Rest API with a user token
+        /// 
+        /// </summary>
+        /// <param name="apiKey">User API key</param>
+        /// <param name="apiSecret">User API secret</param>
+        /// <returns></returns>
         public async Task<Frappe> UseTokenAsync(string apiKey, string apiSecret) {
             ClearAuthorization();
             client.Settings.DefaultHeaders.Add("Authorization", $"token {apiKey}:{apiSecret}");
@@ -97,6 +110,14 @@ namespace Frappe.Net
             return this;
         }
 
+        /// <summary>
+        /// Login to a Frappe Framework site with traditional username/email
+        /// and password
+        /// 
+        /// </summary>
+        /// <param name="email">Username or email</param>
+        /// <param name="password">user password</param>
+        /// <returns></returns>
         public async Task<Frappe> UsePasswordAsync(string email, string password)
         {
             ClearAuthorization();
@@ -124,12 +145,20 @@ namespace Frappe.Net
             return this;
         }
 
+        /// <summary>
+        /// Gets the currently logged user
+        /// </summary>
+        /// <returns>The name of the logged in user</returns>
         public async Task<string> GetLoggedUserAsync() {
             var response =  await client.GetRequest("frappe.auth.get_logged_user")
                     .ExecuteAsStringAsync();
             return ToObject(response).message;
         }
 
+        /// <summary>
+        /// Clear authorization header and reset flags
+        /// 
+        /// </summary>
         private void ClearAuthorization() {
             client.Settings.DefaultHeaders.Remove("Authorization");
             _isAuthenticated = false;
