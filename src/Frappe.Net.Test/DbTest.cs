@@ -60,6 +60,25 @@ namespace Frappe.Net.Test
         }
 
         [TestMethod]
+        public async Task TestSetValueAsync()
+        {
+            var frappe = new Frappe(config["baseUrl"], true);
+            string[] fields = { "name", "description" };
+
+            var data = Guid.NewGuid().ToString();
+            var list = await frappe.UsePasswordAsync(config["adminUser"], config["adminPassword"]).Result
+                .Db.GetListAsync(
+                "ToDo",
+                fields: fields,
+                limitPageLength: 1);
+            var doc = list[0];
+            await frappe.Db.SetValueAsync("ToDo",doc.name.ToObject<String>(), "description", data);
+            var updateDoc = await frappe.Db.GetAsync("ToDo", doc.name.ToObject<String>());
+
+            Assert.AreEqual(data, updateDoc.description.ToObject<String>());
+        }
+
+        [TestMethod]
         public async Task TestInsertAsync()
         {
             var desc = "more inserted dictionary";

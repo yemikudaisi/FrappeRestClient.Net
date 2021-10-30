@@ -152,6 +152,26 @@ namespace Frappe.Net
             return ToObject(response).message;
         }
 
+        public async Task<dynamic> SetValueAsync(string doctype, string name, string fieldName, string value = null)
+        {
+            var request = client.PostRequest("frappe.client.set_value")
+                .AddQueryParameter("doctype", doctype)
+                .AddQueryParameter("name", name)
+                .AddQueryParameter("fieldname", fieldName)
+                .AddQueryParameter("value", value);
+            string response = "";
+
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            return ToObject(response).message;
+        }
+
         /// <summary>
         /// Insert a document
         /// 

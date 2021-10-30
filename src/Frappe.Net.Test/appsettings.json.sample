@@ -1,9 +1,10 @@
 {
-  "baseUrl": "http://172.17.96.164:8000",
+  "baseUrl": "https://manufacturing.erpnext.com/",
   "adminUser": "administrator",
   "adminPassword": "xxxxx",
-  "regularUser": "user@domain.com",
-  "regularPassword": "userpassword",
+  "regularUser": "demo@erpnext.com",
+  "regularPassword": "Demo1234567!!!",
   "apiKey": "121ab34858",
-  "apiSecret": "3232424ace234"
+  "apiSecret": "3232424ace234",
+  "singleTodoName": "266e2a5dfc"
 }
