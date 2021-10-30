@@ -157,7 +157,7 @@ namespace Frappe.Net
         /// 
         /// </summary>
         /// <param name="doc">dictionary to be inserted</param>
-        /// <returns></returns>
+        /// <returns>Dynamic object with properties of the documents that were saved.</returns>
         public async Task<dynamic> InsertAsync(Dictionary<string, object> doc) {
             var request = client.PostRequest("frappe.client.insert")
                 .AddQueryParameter("doc", JsonConvert.SerializeObject(doc));
@@ -176,15 +176,40 @@ namespace Frappe.Net
         }
 
         /// <summary>
-        /// Insert multiple document
+        /// Insert multiple documents
         /// 
         /// </summary>
         /// <param name="docs">List containing dictionaries to be inserted</param>
-        /// <returns></returns>
+        /// <returns>A list of IDs of the newly inserted documents</returns>
         public async Task<dynamic> InsertManyAsync(Dictionary<string, object>[] docs)
         {
             var request = client.PostRequest("frappe.client.insert_many")
                 .AddQueryParameter("docs", JsonConvert.SerializeObject(docs));
+            string response = "";
+
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return ToObject(response).message;
+        }
+
+        /// <summary>
+        /// Update (save) an existing document
+        /// 
+        /// </summary>
+        /// <param name="doc">Dictionary object with the properties of the document to be updated</param>
+        /// <returns>A dynamic object with the properties of </returns>
+        public async Task<dynamic> SaveAsync(object doc)
+        {
+            // FIX: Solve issue where Frappe returns error indicating that the document has been modified after the doc was loaded
+            var request = client.PostRequest("frappe.client.save")
+                .AddQueryParameter("doc", JsonConvert.SerializeObject(doc));
             string response = "";
 
             try

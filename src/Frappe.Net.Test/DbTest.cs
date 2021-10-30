@@ -90,5 +90,27 @@ namespace Frappe.Net.Test
                 .Db.InsertManyAsync(manyDocs);
             Assert.AreEqual((int)docs.Count, 2);
         }
+
+        [TestMethod]
+        public async Task TestSaveAsync()
+        {
+            var frappe = new Frappe(config["baseUrl"], true);
+            string[] fields = { "name", "description" };
+
+            var data = Guid.NewGuid().ToString();
+            var list = await frappe.UsePasswordAsync(config["adminUser"], config["adminPassword"]).Result
+                .Db.GetListAsync(
+                "ToDo",
+                fields:fields,
+                limitPageLength: 1);
+            var doc = list[0];
+            doc.description = data;
+            var name = doc.name;
+            doc.doctype = "ToDo";
+            await frappe.Db.SaveAsync(doc);
+            var updateDoc = await frappe.Db.GetAsync("ToDo", name.ToObject<String>());
+
+            Assert.AreEqual(data, updateDoc.description.ToObject<String>());
+        }
     }
 }

@@ -60,7 +60,7 @@ The methods implemented corellates to RESTful requests that are mapped to the `/
 
 #### Listing Documents
 
-To get a list of records of a DocType us ```Frappe.Db.GetListAsync()```
+To get a list of records of a DocType use ```Frappe.Db.GetListAsync()```
 
 ```cs
 var frappe = new Frappe(baseUrl);
