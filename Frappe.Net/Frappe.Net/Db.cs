@@ -1,5 +1,6 @@
 ﻿using log4net;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -11,32 +12,123 @@ namespace Frappe.Net
 {
     public class Db : JsonObjectParser
     {
-        private const string RESOURCE_PATH = "resource/";
+        private const string RESOURCE_PATH = "/";
         private static readonly ILog log = LogManager.GetLogger(typeof(Db));
+        Frappe frappe;
         TinyRestClient client;
 
-        public Db(TinyRestClient client)
+        public Db(Frappe frappe)
         {
-            this.client = client;
+            this.frappe = frappe;
+            this.client = frappe.Client;
         }
 
-        public async Task<dynamic> GetListAsync(string doctype, string[] fields = null, string[,] filters = null, string orderBy= null, int limit_start= 0, int limitPageLength = 20, string parent = null, bool debug= false, bool asDict= true)
+        /// <summary>
+        /// Returns a list of records by filters, fields, ordering and limit
+        /// 
+        /// </summary>
+        /// <param name="doctype">DocType of the data to be queried</param>
+        /// <param name="fields"></param> fields to be returned. Default is `name`
+        /// <param name="filters">filter list by this dict</param>
+        /// <param name="orderBy">Order by this fieldname</param>
+        /// <param name="limit_start">Start at this index</param>
+        /// <param name="pageLength">Number of records to be returned (default 20)</param>
+        /// <param name="parent"></param>
+        /// <param name="debug"></param>
+        /// <param name="asDict"></param>
+        /// <returns></returns>
+        public async Task<dynamic> GetListAsync(string doctype, string[] fields = null, string[,] filters = null, string orderBy= null, int limit_start= 0, int pageLength = 20, string parent = null, bool debug= false, bool asDict= true)
         {
-            //var text = JsonConvert.SerializeObject(filters);
-            var request = client.GetRequest(getUri(doctype));
+            var request = client.GetRequest("frappe.client.get_list")
+                .AddQueryParameter("doctype", doctype);
 
             if (fields != null)
                 request.AddQueryParameter("fields", JsonConvert.SerializeObject(fields));
-                
+            
+            if (filters != null)
+                request.AddQueryParameter("filters", JsonConvert.SerializeObject(filters));
+
+            if(orderBy != null)
+                request.AddQueryParameter("order_by", orderBy);
+
+            // TODO: Use all method parameters
+
             var response = await request.ExecuteAsStringAsync();
-            return ToObject(response).data;
+            return ToObject(response).message;
         }
 
+        public async Task<int> GetCountAsync(string doctype, string[,] filters = null, bool debug = false, bool cache = false) {
+            var request = client.GetRequest("frappe.client.get_count")
+                .AddQueryParameter("doctype", doctype);
+            request.AddQueryParameter("debug", debug.ToString().ToLower());
+            request.AddQueryParameter("cache", cache.ToString().ToLower());
+            if (filters != null)
+                request.AddQueryParameter("filters", JsonConvert.SerializeObject(filters));
+            var response = await request.ExecuteAsStringAsync();
+            var count = (JValue)ToObject(response).message;
+            return count.ToObject<int>();
+        }
 
-
-        private string getUri(string resourceName)
+        /// <summary>
+        /// Returns a document by name or filters
+        /// 
+        /// </summary>
+        /// <param name="doctype">DocType of the document to be returned</param>
+        /// <param name="name">return document of this `name`</param>
+        /// <param name="filters">If name is not set, filter by these values and return the first match</param>
+        /// <param name="parent">If name is not set, filter by these values and return the first match</param>
+        public async Task<dynamic> GetAsync(string doctype, string name = null, string[,] filters = null, string parent = null)
         {
-            return RESOURCE_PATH + resourceName;
+            var request = client.GetRequest("frappe.client.get")
+                .AddQueryParameter("doctype", doctype);
+
+            if (name != null)
+                request.AddQueryParameter("name", name);
+
+            if (filters != null)
+                request.AddQueryParameter("filters", JsonConvert.SerializeObject(filters));
+
+            if (parent != null)
+                request.AddQueryParameter("parent", parent);
+
+            // TODO: Use all method parameters
+
+            var response = await request.ExecuteAsStringAsync();
+            return ToObject(response).message;
+        }
+
+        /// <summary>
+        /// Returns a document by name or filters
+        /// 
+        /// </summary>
+        /// <param name="doctype">DocType of the document to be returned</param>
+        /// <param name="fieldName">Field to be returned (default `name`)</param>
+        /// <param name="filters"></param>
+        /// <param name="fieldName">return the document the `name` belongs</param>
+        /// <param name="parent">If name is not set, filter by these values and return the first match</param>
+        /// <returns></returns>
+        public string GetValueAync(string doctype, string fieldName = null, string[,] filters = null, bool asDict = false, bool debug = false, string parent = null) {
+
+            return "";
+        }
+
+        public async Task<dynamic> GetSingleValueAysnc(string doctype, string field)
+        {
+            var request = client.GetRequest("frappe.client.get_single_value")
+                .AddQueryParameter("doctype", doctype)
+                .AddQueryParameter("field", field);
+            string response = "";
+
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return ToObject(response).message;
         }
     }
 }

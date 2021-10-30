@@ -1,4 +1,6 @@
 ﻿using Frappe.Net.Authorization;
+using log4net;
+using log4net.Config;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
@@ -22,14 +24,17 @@ namespace Frappe.Net
         private bool _isToken;
         private bool _isAccessToken;
         private Db _db;
-        private const string METHOD_PATH = "method/";
         public Db Db { get =>_db; }
         public bool IsAuthenticated { get => _isAuthenticated; set => _isAuthenticated = value; }
+        public TinyRestClient Client { get => client; set => client = value; }
+
+        private static readonly ILog log = LogManager.GetLogger(typeof(Frappe));
 
         public Frappe(string baseUrl) {
             _baseUrl = baseUrl;
-            client = new TinyRestClient(new HttpClient(), $"{baseUrl}/api");
-            _db = new Db(client);
+            client = new TinyRestClient(new HttpClient(), $"{baseUrl}/api/method");
+            _db = new Db(this);
+            BasicConfigurator.Configure();
         }
 
         public async Task<Frappe> UseAccessTokenAsync(string accessToken)
@@ -89,14 +94,16 @@ namespace Frappe.Net
             ClearAuthorization();
             try
             {
-                await client.PostRequest(getUri("login"), new EmailPasswordPair() { usr = email, pwd = password })
+                await client.PostRequest("login", new EmailPasswordPair() { usr = email, pwd = password })
                     .ExecuteAsStringAsync();
             }
             catch (HttpException e)
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    throw new AuthenticationException("Invalid login credential");
+                    var msg = "Invalid login credential";
+                    log.Error($"{msg} >>> {e.Message}");
+                    throw new AuthenticationException();
                 }
                 if (e.StatusCode == System.Net.HttpStatusCode.InternalServerError)
                 {
@@ -110,7 +117,7 @@ namespace Frappe.Net
         }
 
         public async Task<string> GetLoggedUserAsync() {
-            var response =  await client.GetRequest(getUri("frappe.auth.get_logged_user"))
+            var response =  await client.GetRequest("frappe.auth.get_logged_user")
                     .ExecuteAsStringAsync();
             return ToObject(response).message;
         }
@@ -126,10 +133,6 @@ namespace Frappe.Net
         public void Logout()
         {
             ClearAuthorization();
-        }
-
-        private string getUri(string method) {
-            return METHOD_PATH + method;
         }
     }
 }

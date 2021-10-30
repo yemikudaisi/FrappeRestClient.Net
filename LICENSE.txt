@@ -1,0 +1,10 @@
+{
+doctype: ToDo
+fields: ["`tabToDo`.`name`","`tabToDo`.`owner`","`tabToDo`.`creation`","`tabToDo`.`modified`","`tabToDo`.`modified_by`","`tabToDo`.`_user_tags`","`tabToDo`.`_comments`","`tabToDo`.`_assign`","`tabToDo`.`_liked_by`","`tabToDo`.`docstatus`","`tabToDo`.`parent`","`tabToDo`.`parenttype`","`tabToDo`.`parentfield`","`tabToDo`.`idx`","`tabToDo`.`status`","`tabToDo`.`priority`","`tabToDo`.`reference_type`","`tabToDo`.`description`","`tabToDo`.`reference_name`","`tabToDo`.`_seen`","`tabToDo`.`color`"]
+filters: [["ToDo","status","=","Open"],["ToDo","owner","=","Administrator"]]
+order_by: `tabToDo`.`modified` desc
+start: 0
+page_length: 20
+view: List
+with_comment_count: true
+}

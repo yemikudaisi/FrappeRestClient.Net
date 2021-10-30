@@ -18,11 +18,30 @@ namespace Frappe.Net.Console
             try {
                 var frappe = new Frappe(baseUrl);
                 await frappe.UseTokenAsync(apiKey, apiSecret);
-                string[] fields = { "name", "description" };
-                string[,] filters = { { "status", "=", "Open" } };
-                var todos = await frappe.Db.GetListAsync("ToDo", fields:fields, filters:filters);
+                string[] fields = { 
+                    "name", 
+                    "description",
+                    "status"
+                };
+                
+                string[,] filters = { 
+                    { 
+                        "status", "=", "Open" 
+                    } 
+                };
+
+                var count = await frappe.Db.GetCountAsync("ToDo");
+                console.WriteLine($"{count}");
+
+                var todos = await frappe.Db.GetListAsync(
+                    "ToDo", 
+                    fields:fields, 
+                    filters:filters,
+                    orderBy: "modified desc"
+                );
+
                 foreach ( var t in todos) {
-                    console.WriteLine($"{t.name} -> {t.description}");
+                    console.WriteLine($"{t.name} -> {t.description} : {t.status}");
                 }
             }
             catch (HttpException e)
