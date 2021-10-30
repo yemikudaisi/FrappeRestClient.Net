@@ -1,5 +1,7 @@
 # Frappe.Net
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 .Net REST client for [Frappe Framework](https://frappeframework.com/)
 
 ## Basic Usage
