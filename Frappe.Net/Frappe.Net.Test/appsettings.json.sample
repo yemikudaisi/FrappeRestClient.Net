@@ -1,0 +1,9 @@
+{
+  "baseUrl": "http://172.17.96.164:8000",
+  "adminUser": "administrator",
+  "adminPassword": "xxxxx",
+  "regularUser": "user@domain.com",
+  "regularPassword": "userpassword",
+  "apiKey": "121ab34858",
+  "apiSecret": "3232424ace234"
+}

@@ -64,7 +64,7 @@ namespace Frappe.Net
                 request.AddQueryParameter("debug", true);
 
             if(!asDict)
-                request.AddQueryParameter("debug", true);
+                request.AddQueryParameter("as_dict", true);
             
             // TODO: Test all parameters
 
@@ -74,11 +74,17 @@ namespace Frappe.Net
 
         public async Task<int> GetCountAsync(string doctype, string[,] filters = null, bool debug = false, bool cache = false) {
             var request = client.GetRequest("frappe.client.get_count")
-                .AddQueryParameter("doctype", doctype);
-            request.AddQueryParameter("debug", debug.ToString().ToLower());
-            request.AddQueryParameter("cache", cache.ToString().ToLower());
+                .AddQueryParameter("doctype", doctype)
+                .AddQueryParameter("debug", debug.ToString().ToLower());
+
             if (filters != null)
                 request.AddQueryParameter("filters", JsonConvert.SerializeObject(filters));
+
+            // HACK: Adding cache even when false return false result
+            // TODO: Investigate
+            if (cache)
+                request.AddQueryParameter("cache", true);
+
             var response = await request.ExecuteAsStringAsync();
             var count = (JValue)ToObject(response).message;
             return count.ToObject<int>();

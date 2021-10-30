@@ -1,8 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Newtonsoft.Json.Linq;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.IO;
 using System.Threading.Tasks;
 
 namespace Frappe.Net.Test
@@ -10,13 +10,22 @@ namespace Frappe.Net.Test
     [TestClass]
     public class DbTest
     {
-        const string BASE_URL = "http://172.18.245.101:8000";
+        IConfiguration config;
+
+        public DbTest()
+        {
+            config =
+                new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", false)
+                    .Build();
+        }
 
         [TestMethod]
         public async Task TestIfGetListAsync()
         {
-            var frappe = new Frappe(BASE_URL);
-            await frappe.UseTokenAsync("ff38e60e1ef4c35", "346923835a2f4e0");
+            var frappe = new Frappe(config["baseUrl"]);
+            await frappe.UseTokenAsync(config["apiKey"], config["apiSecret"]);
             var userList = await frappe.Db.GetListAsync("ToDo");
             Assert.IsTrue(((int)userList.Count > 1 ? true : false));
         }
@@ -24,8 +33,8 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestGetCountAsync()
         {
-            var frappe = new Frappe(BASE_URL);
-            await frappe.UseTokenAsync("ff38e60e1ef4c35", "346923835a2f4e0");
+            var frappe = new Frappe(config["baseUrl"], true);
+            await frappe.UseTokenAsync(config["apiKey"], config["apiSecret"]);
             var userList = await frappe.Db.GetListAsync("ToDo");
             var count = await frappe.Db.GetCountAsync("ToDo");
             Assert.AreEqual(userList.Count, count);
@@ -34,8 +43,8 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestGetAysnc() {
             
-            var frappe = new Frappe(BASE_URL);
-            await frappe.UsePasswordAsync("administrator", "cyberm");
+            var frappe = new Frappe(config["baseUrl"]);
+            await frappe.UsePasswordAsync(config["adminUser"], config["adminPassword"]);
             var doc = await frappe.Db.GetAsync("ToDo", "c31b510a68");
             Assert.AreEqual(doc.description.ToObject<String>(), "test doctype");
 
@@ -44,8 +53,8 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestGetSingleValueAsync()
         {
-            var frappe = new Frappe(BASE_URL);
-            var value = await frappe.UsePasswordAsync("administrator", "cyberm").Result
+            var frappe = new Frappe(config["baseUrl"]);
+            var value = await frappe.UsePasswordAsync(config["adminUser"], config["adminPassword"]).Result
                 .Db.GetSingleValueAysnc("Website Settings", "website_theme");
             Assert.AreEqual(value.ToObject<String>(), "Standard");
         }
@@ -53,8 +62,8 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestInsertAsync()
         {
-            var frappe = new Frappe(BASE_URL, true);
-            var doc = await frappe.UsePasswordAsync("administrator", "cyberm").Result
+            var frappe = new Frappe(config["baseUrl"], true);
+            var doc = await frappe.UsePasswordAsync(config["adminUser"], config["adminPassword"]).Result
                 .Db.InsertAsync(new Dictionary<string, object> {
                     { "doctype", "ToDo"},
                     { "description","inserted dictionary"}

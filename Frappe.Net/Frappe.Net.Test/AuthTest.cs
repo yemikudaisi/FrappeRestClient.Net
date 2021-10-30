@@ -1,4 +1,6 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.IO;
 using System.Security.Authentication;
 using System.Threading.Tasks;
 
@@ -7,14 +9,24 @@ namespace Frappe.Net.Test
     [TestClass]
     public class AuthTest
     {
-        const string BASE_URL = "http://172.18.245.101:8000";
+        IConfiguration config;
+
+        public AuthTest()
+        {
+            config =
+                new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", false)
+                    .Build();
+        }
+
         [TestMethod]
         public async Task TestIfWrongLoginReturnsExceptionAsync()
         {
             bool exceptionThrowed = false;
             try
             {
-                var frappe = new Frappe(BASE_URL);
+                var frappe = new Frappe(config["baseUrl"]);
                 await frappe.UsePasswordAsync("wrong", "details");
             }
             catch (AuthenticationException)
@@ -27,10 +39,10 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestIfCorrectLoginAsync()
         {
-            var frappe = new Frappe(BASE_URL);
-            await frappe.UsePasswordAsync("user@domail.com", "user@domail");
+            var frappe = new Frappe(config["baseUrl"]);
+            await frappe.UsePasswordAsync(config["regularUser"], config["regularPassword"]);
             var user = await frappe.GetLoggedUserAsync();
-            Assert.AreEqual("user@domail.com", user);
+            Assert.AreEqual(config["regularUser"], user);
         }
 
         [TestMethod]
@@ -39,7 +51,7 @@ namespace Frappe.Net.Test
             bool exceptionThrowed = false;
             try
             {
-                var frappe = new Frappe(BASE_URL);
+                var frappe = new Frappe(config["baseUrl"]);
                 await frappe.UseTokenAsync("secret", "key");
             }
             catch (AuthenticationException)
@@ -52,28 +64,16 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestIfCorrectTokenAsync()
         {
-            var frappe = new Frappe(BASE_URL);
-            await frappe.UseTokenAsync("ff38e60e1ef4c35", "346923835a2f4e0");
+            var frappe = new Frappe(config["baseUrl"]);
+            await frappe.UseTokenAsync(config["apiKey"], config["apiSecret"]);
             var user = await frappe.GetLoggedUserAsync();
             Assert.AreEqual("yemikudaisi@gmail.com", user);
         }
 
         [TestMethod]
-        public void TestIfWrongAccessTokenThrowsExceptionAsync()
-        {
-            Assert.IsTrue(false);
-        }
-
-        [TestMethod]
-        public void TestIfCorrectAccessTokenAsync()
-        {
-            Assert.IsTrue(false);
-        }
-
-        [TestMethod]
         public async Task TestIsLoggedOutAsync() {
-            var frappe = new Frappe(BASE_URL);
-            await frappe.UseTokenAsync("ff38e60e1ef4c35", "346923835a2f4e0");
+            var frappe = new Frappe(config["baseUrl"]);
+            await frappe.UseTokenAsync(config["apiKey"], config["apiSecret"]);
             frappe.Logout();
 
             bool exceptionThrown = false;
