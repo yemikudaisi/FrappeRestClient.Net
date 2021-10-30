@@ -45,9 +45,21 @@ namespace Frappe.Net.Test
         public async Task TestGetSingleValueAsync()
         {
             var frappe = new Frappe(BASE_URL);
-            await frappe.UsePasswordAsync("administrator", "cyberm");
-            var value = await frappe.Db.GetSingleValueAysnc("Website Settings", "website_theme");
+            var value = await frappe.UsePasswordAsync("administrator", "cyberm").Result
+                .Db.GetSingleValueAysnc("Website Settings", "website_theme");
             Assert.AreEqual(value.ToObject<String>(), "Standard");
+        }
+
+        [TestMethod]
+        public async Task TestInsertAsync()
+        {
+            var frappe = new Frappe(BASE_URL, true);
+            var doc = await frappe.UsePasswordAsync("administrator", "cyberm").Result
+                .Db.InsertAsync(new Dictionary<string, object> {
+                    { "doctype", "ToDo"},
+                    { "description","inserted dictionary"}
+                });
+            Assert.AreEqual(doc.description.ToObject<String>(), "inserted dictionary");
         }
     }
 }

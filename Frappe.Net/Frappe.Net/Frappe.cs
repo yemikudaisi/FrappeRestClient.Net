@@ -30,9 +30,17 @@ namespace Frappe.Net
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Frappe));
 
-        public Frappe(string baseUrl) {
+        /// <summary>
+        /// Class contructor
+        /// 
+        /// </summary>
+        /// <param name="baseUrl">Base url to the frappe site</param>
+        /// <param name="debug">if true Frappe will logs all requests in debug console</param>
+        public Frappe(string baseUrl, bool debug=false) {
             _baseUrl = baseUrl;
             client = new TinyRestClient(new HttpClient(), $"{baseUrl}/api/method");
+            if (debug)
+                client.Settings.Listeners.AddDebug();
             _db = new Db(this);
             BasicConfigurator.Configure();
         }

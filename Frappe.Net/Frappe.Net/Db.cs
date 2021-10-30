@@ -32,12 +32,12 @@ namespace Frappe.Net
         /// <param name="filters">filter list by this dict</param>
         /// <param name="orderBy">Order by this fieldname</param>
         /// <param name="limit_start">Start at this index</param>
-        /// <param name="pageLength">Number of records to be returned (default 20)</param>
+        /// <param name="limitPageLength">Number of records to be returned (default 20)</param>
         /// <param name="parent"></param>
         /// <param name="debug"></param>
         /// <param name="asDict"></param>
         /// <returns></returns>
-        public async Task<dynamic> GetListAsync(string doctype, string[] fields = null, string[,] filters = null, string orderBy= null, int limit_start= 0, int pageLength = 20, string parent = null, bool debug= false, bool asDict= true)
+        public async Task<dynamic> GetListAsync(string doctype, string[] fields = null, string[,] filters = null, string orderBy= null, int limitStart= 0, int limitPageLength = 20, string parent = null, bool debug= false, bool asDict= true)
         {
             var request = client.GetRequest("frappe.client.get_list")
                 .AddQueryParameter("doctype", doctype);
@@ -51,7 +51,22 @@ namespace Frappe.Net
             if(orderBy != null)
                 request.AddQueryParameter("order_by", orderBy);
 
-            // TODO: Use all method parameters
+            if (limitStart > 0)
+                request.AddQueryParameter("limit_start", limitStart);
+
+            if (limitPageLength != 20)
+                request.AddQueryParameter("limit_page_length", limitPageLength);
+
+            if (parent != null)
+                request.AddQueryParameter("parent", parent);
+
+            if(debug)
+                request.AddQueryParameter("debug", true);
+
+            if(!asDict)
+                request.AddQueryParameter("debug", true);
+            
+            // TODO: Test all parameters
 
             var response = await request.ExecuteAsStringAsync();
             return ToObject(response).message;
@@ -117,6 +132,29 @@ namespace Frappe.Net
             var request = client.GetRequest("frappe.client.get_single_value")
                 .AddQueryParameter("doctype", doctype)
                 .AddQueryParameter("field", field);
+            string response = "";
+
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return ToObject(response).message;
+        }
+
+        /// <summary>
+        /// Insert a document
+        /// 
+        /// </summary>
+        /// <param name="docName">dictionary to be inserted</param>
+        /// <returns></returns>
+        public async Task<dynamic> InsertAsync(Dictionary<string, object> doc) {
+            var request = client.PostRequest("frappe.client.insert")
+                .AddQueryParameter("doc", JsonConvert.SerializeObject(doc));
             string response = "";
 
             try
