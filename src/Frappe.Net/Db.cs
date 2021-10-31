@@ -308,5 +308,30 @@ namespace Frappe.Net
             }
             return ToObject(response).message;
         }
+
+        /// <summary>
+        /// Cancel a document
+        /// </summary>
+        /// <param name="doctype">Doctype of the document to be cancelled</param>
+        /// <param name="name">Name of the document</param>
+        /// <returns>The document that was cencelled</returns>
+        public async Task<dynamic> CancelAsync(string doctype, string name)
+        {
+            var request = client.PostRequest("frappe.client.cancel")
+                .AddQueryParameter("doctype", doctype)
+                .AddQueryParameter("name", name);
+            string response = "";
+
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return ToObject(response).message;
+        }
     }
 }
