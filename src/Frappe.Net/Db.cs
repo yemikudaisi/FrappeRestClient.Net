@@ -254,8 +254,8 @@ namespace Frappe.Net
 
         /// <summary>
         /// Rename document
-        /// 
         /// </summary>
+        /// 
         /// <param name="doctype">Doctype of the document to be renamed</param>
         /// <param name="oldName"Current `name` of the document to be renamed></param>
         /// <param name="newName">New `name` to be set</param>
@@ -284,6 +284,29 @@ namespace Frappe.Net
                 throw new UnauthorizedAccessException(responseObj._server_messages);
             }
             return ToObject(response).message.ToObject<string>();
+        }
+
+        /// <summary>
+        /// Submit a document
+        /// </summary>
+        /// <param name="doc">JSON or dict object to be submitted remotely</param>
+        /// <returns>The submitted document</returns>
+        public async Task<dynamic> SubmitAsync(Dictionary<string, object> doc)
+        {
+            var request = client.PostRequest("frappe.client.submit")
+                .AddQueryParameter("doc", JsonConvert.SerializeObject(doc));
+            string response = "";
+
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return ToObject(response).message;
         }
     }
 }
