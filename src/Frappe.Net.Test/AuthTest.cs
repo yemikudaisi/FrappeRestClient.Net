@@ -67,7 +67,7 @@ namespace Frappe.Net.Test
             var frappe = new Frappe(config["baseUrl"]);
             await frappe.UseTokenAsync(config["apiKey"], config["apiSecret"]);
             var user = await frappe.GetLoggedUserAsync();
-            Assert.AreEqual("yemikudaisi@gmail.com", user);
+            Assert.AreEqual("Administrator", user);
         }
 
         [TestMethod]

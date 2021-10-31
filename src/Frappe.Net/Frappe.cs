@@ -78,7 +78,23 @@ namespace Frappe.Net
         }
 
         /// <summary>
-        /// Login to a Frappe site Rest API with a user token
+        /// Add authorization token by default to all request headers
+        /// whithout validation
+        /// </summary>
+        /// <param name="apiKey">User API key</param>
+        /// <param name="apiSecret">User API secret</param>
+        /// <returns></returns>
+        public Frappe SetToken(string apiKey, string apiSecret)
+        {
+
+            ClearAuthorization();
+            client.Settings.DefaultHeaders.Add("Authorization", $"token {apiKey}:{apiSecret}");
+            return this;
+        }
+
+        /// <summary>
+        /// Adds authorization token to by default to all request headers and
+        /// validates it by getting the current logged in user
         /// 
         /// </summary>
         /// <param name="apiKey">User API key</param>

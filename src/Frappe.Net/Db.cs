@@ -65,10 +65,18 @@ namespace Frappe.Net
 
             if(!asDict)
                 request.AddQueryParameter("as_dict", true);
-            
+
             // TODO: Test all parameters
 
-            var response = await request.ExecuteAsStringAsync();
+            string response;
+
+            try {
+                response = await request.ExecuteAsStringAsync();
+            } 
+            catch (Exception e)
+            {
+                throw;
+            }
             return ToObject(response).message;
         }
 
@@ -224,7 +232,7 @@ namespace Frappe.Net
         /// 
         /// </summary>
         /// <param name="doc">Dictionary object with the properties of the document to be updated</param>
-        /// <returns>A dynamic object with the properties of </returns>
+        /// <returns>A dynamic object with the properties of the saved doc</returns>
         public async Task<dynamic> SaveAsync(object doc)
         {
             // FIX: Solve issue where Frappe returns error indicating that the document has been modified after the doc was loaded
@@ -242,6 +250,40 @@ namespace Frappe.Net
                 throw;
             }
             return ToObject(response).message;
+        }
+
+        /// <summary>
+        /// Rename document
+        /// 
+        /// </summary>
+        /// <param name="doctype">Doctype of the document to be renamed</param>
+        /// <param name="oldName"Current `name` of the document to be renamed></param>
+        /// <param name="newName">New `name` to be set</param>
+        /// <param name="merge"></param>
+        /// <returns>New name of the document after successful rename</returns>
+
+        public async Task<string> renameDoc(string doctype, string oldName, string newName, bool merge = false) {
+            // FIX: Find out reason empty response with actual rename
+
+            var request = client.PostRequest("frappe.client.rename_doc")
+                .AddQueryParameter("doctype", doctype)
+                .AddQueryParameter("old_name", oldName)
+                .AddQueryParameter("new_name", newName)
+                .AddQueryParameter("merge", merge.ToString());
+            string response = "";
+
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (Exception)
+            {
+                var responseObj = ToObject(response);
+                var server_messages = responseObj._server_messages;
+                var message = server_messages[0];
+                throw new UnauthorizedAccessException(responseObj._server_messages);
+            }
+            return ToObject(response).message.ToObject<string>();
         }
     }
 }
