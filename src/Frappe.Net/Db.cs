@@ -168,16 +168,44 @@ namespace Frappe.Net
         /// <summary>
         /// Returns a document by name or filters
         /// </summary>
-        /// <param name="doctype">DocType of the document to be returned</param>
+        /// <param name="doctype">DocType of the document to be queries</param>
         /// <param name="fieldName">Field to be returned (default `name`)</param>
         /// <param name="filters"></param>
         /// <param name="asDict">Tells frappe to return the document as dict which is then translated to dynamic object</param>
         /// <param name="debug">Turns on/off response debug</param>
         /// <param name="parent">If name is not set, filter by these values and return the first match</param>
         /// <returns>The value gotten</returns>
-        public string GetValueAync(string doctype, string fieldName = null, string[,] filters = null, bool asDict = false, bool debug = false, string parent = null) {
+        public async Task<dynamic> GetValueAsync(string doctype, string fieldName = null, string[,] filters = null, bool asDict = true, bool debug = false, string parent = null) {
+            var request = client.GetRequest("frappe.client.get_value")
+                .AddQueryParameter("doctype", doctype);
 
-            return "";
+            if (fieldName != null)
+                request.AddQueryParameter("fieldname", fieldName);
+
+            if (filters != null)
+                request.AddQueryParameter("filters", JsonConvert.SerializeObject(filters));
+
+            if (!asDict)
+                request.AddQueryParameter("as_dict", "False");
+
+            if (debug)
+                request.AddQueryParameter("debug", debug);
+
+            if (parent != null)
+                request.AddQueryParameter("parent", parent);
+
+            string response = "";
+
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return ToObject(response).message;
         }
 
         /// <summary>
@@ -186,7 +214,7 @@ namespace Frappe.Net
         /// <param name="doctype">Name of the document that conatins the value</param>
         /// <param name="field">The field in the document that holds the value</param>
         /// <returns></returns>
-        public async Task<dynamic> GetSingleValueAysnc(string doctype, string field)
+        public async Task<dynamic> GetSingleValueAsync(string doctype, string field)
         {
             var request = client.GetRequest("frappe.client.get_single_value")
                 .AddQueryParameter("doctype", doctype)

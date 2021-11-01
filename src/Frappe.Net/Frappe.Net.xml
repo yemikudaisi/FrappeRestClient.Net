@@ -78,11 +78,11 @@
             <param name="filters">If name is not set, filter by these values and return the first match</param>
             <param name="parent">If name is not set, filter by these values and return the first match</param>
         </member>
-        <member name="M:Frappe.Net.Db.GetValueAync(System.String,System.String,System.String[0:,0:],System.Boolean,System.Boolean,System.String)">
+        <member name="M:Frappe.Net.Db.GetValueAsync(System.String,System.String,System.String[0:,0:],System.Boolean,System.Boolean,System.String)">
             <summary>
             Returns a document by name or filters
             </summary>
-            <param name="doctype">DocType of the document to be returned</param>
+            <param name="doctype">DocType of the document to be queries</param>
             <param name="fieldName">Field to be returned (default `name`)</param>
             <param name="filters"></param>
             <param name="asDict">Tells frappe to return the document as dict which is then translated to dynamic object</param>
@@ -90,7 +90,7 @@
             <param name="parent">If name is not set, filter by these values and return the first match</param>
             <returns>The value gotten</returns>
         </member>
-        <member name="M:Frappe.Net.Db.GetSingleValueAysnc(System.String,System.String)">
+        <member name="M:Frappe.Net.Db.GetSingleValueAsync(System.String,System.String)">
             <summary>
             Get a value from a single-type document
             </summary>

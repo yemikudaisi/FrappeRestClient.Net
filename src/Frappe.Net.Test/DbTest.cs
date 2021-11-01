@@ -55,9 +55,17 @@ namespace Frappe.Net.Test
         }
 
         [TestMethod]
+        public async Task TestGetValueAsync()
+        {
+            string[,] filter = { { "name", "=", "bafc4c81fe" } };
+            var value = await Frappe.Db.GetValueAsync("ToDo", "description",filter);
+            Assert.AreEqual("The J07 of G50X is 8OFTOCZ", value.description.ToString());
+        }
+
+        [TestMethod]
         public async Task TestGetSingleValueAsync()
         {
-            var value = await Frappe.Db.GetSingleValueAysnc("Website Settings", "website_theme");
+            var value = await Frappe.Db.GetSingleValueAsync("Website Settings", "website_theme");
             Assert.AreEqual(value.ToObject<String>(), "Standard");
         }
 
