@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace Frappe.Net.Test
 {
     [TestClass]
-    public class AuthTest
+    public class FrappeTest
     {
         IConfiguration config;
 
-        public AuthTest()
+        public FrappeTest()
         {
             config =
                 new ConfigurationBuilder()
@@ -87,6 +87,13 @@ namespace Frappe.Net.Test
                 exceptionThrown = true;
             }
             Assert.IsTrue(exceptionThrown, $"An {nameof(Tiny.RestClient.HttpException)} must be thrown when {nameof(Frappe)} is logged out");
+        }
+
+        [TestMethod]
+        public async Task TestPing() {
+            var frappe = new Frappe(config["baseUrl"]);
+            var response = await frappe.PingAsync();
+            Assert.AreEqual("pong", response);
         }
     }
 }

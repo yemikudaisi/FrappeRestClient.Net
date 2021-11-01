@@ -203,5 +203,11 @@ namespace Frappe.Net
         {
             ClearAuthorization();
         }
+
+        public async Task<string> PingAsync()
+        {
+            var response = await client.GetRequest("frappe.ping").ExecuteAsStringAsync();
+            return ToObject(response).message.ToString();
+        }
     }
 }
