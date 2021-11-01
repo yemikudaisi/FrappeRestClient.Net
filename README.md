@@ -14,9 +14,19 @@ using Frappe.Net
 var frappe = new Frappe("https://base-url.com/");
 ```
 
+### Test Connection to Frappe Site
+
+To ping a Frappe Site use the ```PingAsync``` method.
+
+```cs
+...
+var res = await frappe.PingAsync()
+Console.WriteLine(res) // pong
+```
+
 ### Debug
 
-When the debug mode is on, Frappe.Net logs all requests in debug console
+When the debug mode is on, Frappe.Net logs all HTTP requests in debug console
 
 ```cs
 var frappe = new Frappe("https://base-url.com/", true);
@@ -81,7 +91,9 @@ var todos = await frappe.Db.GetListAsync(
     "ToDo", 
     fields:fields, 
     filters:filters,
-    orderBy: "modified desc"
+    orderBy: "modified desc",
+    limitStart: 10,
+    limitPageLenght: 30,
 );
 
 foreach ( var t in todos) {
@@ -93,7 +105,24 @@ By default Frappe will return 20 records and will only fetch the name of the rec
 
 #### Get Count
 
+```cs
+string[,] filters = { 
+    { 
+        "status", "=", "Closed" 
+    } 
+};
+int count = Frappe.Db.GetCount("ToDo"); // count all close ToDo
+```
+
 #### Get Single Document
+
+To get a document with a document name use the ```GetAsync``` method.
+```
+var doc = await Frappe.Db.GetAsync("ToDo", "340a5acab3");
+Console.WriteLine(doc.name); // 340a5acab3
+```
+
+This method will throw a ```KeyNotFoundException``` if the document for the suplied name is not found.
 
 #### Get Single Value from Document
 

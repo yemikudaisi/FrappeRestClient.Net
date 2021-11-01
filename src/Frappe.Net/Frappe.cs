@@ -24,6 +24,10 @@ namespace Frappe.Net
         private bool _isToken;
         private bool _isAccessToken;
         private Db _db;
+
+        /// <summary>
+        /// Gets the DB object
+        /// </summary>
         public Db Db { get =>_db; }
         public bool IsAuthenticated { get => _isAuthenticated; set => _isAuthenticated = value; }
         public TinyRestClient Client { get => client; set => client = value; }
@@ -45,6 +49,12 @@ namespace Frappe.Net
             BasicConfigurator.Configure();
         }
 
+        /// <summary>
+        /// Changes the route from the default route
+        /// to supplied route
+        /// </summary>
+        /// 
+        /// <param name="route">The new route for subsequent calls</param>
         public void ChangeRoute(string route) {
             var headers = client.Settings.DefaultHeaders;
             client = new TinyRestClient(new HttpClient(), $"{_baseUrl}{route}");
@@ -56,6 +66,9 @@ namespace Frappe.Net
             }
         }
 
+        /// <summary>
+        /// Reset the API route back to default (/api/method/)
+        /// </summary>
         public void ResetRoute()
         {
             ChangeRoute("/api/method");
@@ -199,11 +212,18 @@ namespace Frappe.Net
             _isAccessToken = false;
         }
 
+        /// <summary>
+        /// Logout a frappe user
+        /// </summary>
         public void Logout()
         {
             ClearAuthorization();
         }
 
+        /// <summary>
+        /// Pings the frappe site
+        /// </summary>
+        /// <returns>Returns the reponse from the Frappe site</returns>
         public async Task<string> PingAsync()
         {
             var response = await client.GetRequest("frappe.ping").ExecuteAsStringAsync();

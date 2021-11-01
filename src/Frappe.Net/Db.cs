@@ -31,7 +31,7 @@ namespace Frappe.Net
         /// <param name="fields"></param> fields to be returned. Default is `name`
         /// <param name="filters">filter list by this dict</param>
         /// <param name="orderBy">Order by this fieldname</param>
-        /// <param name="limit_start">Start at this index</param>
+        /// <param name="limitStart">Start at this index</param>
         /// <param name="limitPageLength">Number of records to be returned (default 20)</param>
         /// <param name="parent"></param>
         /// <param name="debug"></param>

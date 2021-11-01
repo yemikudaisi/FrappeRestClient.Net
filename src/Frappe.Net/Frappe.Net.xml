@@ -1,0 +1,179 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Frappe.Net</name>
+    </assembly>
+    <members>
+        <member name="M:Frappe.Net.Db.GetListAsync(System.String,System.String[],System.String[0:,0:],System.String,System.Int32,System.Int32,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Returns a list of records by filters, fields, ordering and limit
+            
+            </summary>
+            <param name="doctype">DocType of the data to be queried</param>
+            <param name="fields"></param> fields to be returned. Default is `name`
+            <param name="filters">filter list by this dict</param>
+            <param name="orderBy">Order by this fieldname</param>
+            <param name="limit_start">Start at this index</param>
+            <param name="limitPageLength">Number of records to be returned (default 20)</param>
+            <param name="parent"></param>
+            <param name="debug"></param>
+            <param name="asDict"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Frappe.Net.Db.GetAsync(System.String,System.String,System.String[0:,0:],System.String)">
+            <summary>
+            Returns a document by name or filters
+            
+            </summary>
+            <param name="doctype">DocType of the document to be returned</param>
+            <param name="name">return document of this `name`</param>
+            <param name="filters">If name is not set, filter by these values and return the first match</param>
+            <param name="parent">If name is not set, filter by these values and return the first match</param>
+        </member>
+        <member name="M:Frappe.Net.Db.GetValueAync(System.String,System.String,System.String[0:,0:],System.Boolean,System.Boolean,System.String)">
+            <summary>
+            Returns a document by name or filters
+            
+            </summary>
+            <param name="doctype">DocType of the document to be returned</param>
+            <param name="fieldName">Field to be returned (default `name`)</param>
+            <param name="filters"></param>
+            <param name="fieldName">return the document the `name` belongs</param>
+            <param name="parent">If name is not set, filter by these values and return the first match</param>
+            <returns></returns>
+        </member>
+        <member name="M:Frappe.Net.Db.InsertAsync(System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Insert a document
+            
+            </summary>
+            <param name="doc">dictionary to be inserted</param>
+            <returns>Dynamic object with properties of the documents that were saved.</returns>
+        </member>
+        <member name="M:Frappe.Net.Db.InsertManyAsync(System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+            <summary>
+            Insert multiple documents
+            
+            </summary>
+            <param name="docs">List containing dictionaries to be inserted</param>
+            <returns>A list of IDs of the newly inserted documents</returns>
+        </member>
+        <member name="M:Frappe.Net.Db.SaveAsync(System.Object)">
+            <summary>
+            Update (save) an existing document
+            
+            </summary>
+            <param name="doc">Dictionary object with the properties of the document to be updated</param>
+            <returns>A dynamic object with the properties of the saved doc</returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Frappe.Net.Db.renameDoc(System.String,System.String,System.String,System.Int32)" -->
+        <member name="M:Frappe.Net.Db.SubmitAsync(System.Collections.Generic.Dictionary{System.String,System.Object})">
+            <summary>
+            Submit a document
+            </summary>
+            <param name="doc">JSON or dict object to be submitted remotely</param>
+            <returns>The submitted document</returns>
+        </member>
+        <member name="M:Frappe.Net.Db.CancelAsync(System.String,System.String)">
+            <summary>
+            Cancel a document
+            </summary>
+            <param name="doctype">Doctype of the document to be cancelled</param>
+            <param name="name">Name of the document</param>
+            <returns>The document that was cencelled</returns>
+        </member>
+        <member name="M:Frappe.Net.Db.DeleteAsync(System.String,System.String)">
+            <summary>
+            Delete a remote document
+            </summary>
+            <param name="doctype">DocType of the document to be deleted</param>
+            <param name="name">Name of the document to be deleted</param>
+            <returns></returns>
+        </member>
+        <member name="M:Frappe.Net.Db.AttachFileAsync(System.String,System.Byte[],System.String,System.String,System.String,System.Boolean,System.String)">
+            <summary>
+            Attach a file to Document
+            </summary>
+            
+            <param name="fileName">filename e.g. test-file.txt</param>
+            <param name="fileData">Byte array of the file content</param>
+            <param name="docType">Reference DocType to attach file to</param>
+            <param name="docName">Reference DocName to attach file to</param>
+            <param name="folder">Folder to add File into</param>
+            <param name="isPrivate">Attach file as private file</param>
+            <param name="docField">field to attach to (optional)</param>
+            <returns></returns>
+        </member>
+        <member name="T:Frappe.Net.Frappe">
+            <summary>
+            Entry class in to the frappe REST client
+            manages all communication to the remote Frappe Framework deployment
+            
+            </summary>
+        </member>
+        <member name="M:Frappe.Net.Frappe.#ctor(System.String,System.Boolean)">
+            <summary>
+            Class contructor
+            
+            </summary>
+            <param name="baseUrl">Base url to the frappe site</param>
+            <param name="debug">if true Frappe will logs all requests in debug console</param>
+        </member>
+        <member name="M:Frappe.Net.Frappe.UseAccessTokenAsync(System.String)">
+            <summary>
+            Login to Frappe sight using access token
+            
+            </summary>
+            <param name="accessToken">The apps access token</param>
+            <returns></returns>
+        </member>
+        <member name="M:Frappe.Net.Frappe.SetToken(System.String,System.String)">
+            <summary>
+            Add authorization token by default to all request headers
+            whithout validation
+            </summary>
+            <param name="apiKey">User API key</param>
+            <param name="apiSecret">User API secret</param>
+            <returns></returns>
+        </member>
+        <member name="M:Frappe.Net.Frappe.UseTokenAsync(System.String,System.String)">
+            <summary>
+            Adds authorization token to by default to all request headers and
+            validates it by getting the current logged in user
+            
+            </summary>
+            <param name="apiKey">User API key</param>
+            <param name="apiSecret">User API secret</param>
+            <returns></returns>
+        </member>
+        <member name="M:Frappe.Net.Frappe.UsePasswordAsync(System.String,System.String)">
+            <summary>
+            Login to a Frappe Framework site with traditional username/email
+            and password
+            
+            </summary>
+            <param name="email">Username or email</param>
+            <param name="password">user password</param>
+            <returns></returns>
+        </member>
+        <member name="M:Frappe.Net.Frappe.GetLoggedUserAsync">
+            <summary>
+            Gets the currently logged user
+            </summary>
+            <returns>The name of the logged in user</returns>
+        </member>
+        <member name="M:Frappe.Net.Frappe.ClearAuthorization">
+            <summary>
+            Clear authorization header and reset flags
+            
+            </summary>
+        </member>
+        <member name="M:Frappe.Net.JsonObjectParser.ToObject(System.String)">
+            <summary>
+            Convets JSON string to object
+            </summary>
+            <param name="json">The string to be parsed to object</param>
+            <returns>A dynamic object parse from JSON</returns>
+        </member>
+    </members>
+</doc>
