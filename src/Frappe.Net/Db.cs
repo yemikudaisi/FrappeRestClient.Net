@@ -10,6 +10,22 @@ using Tiny.RestClient;
 
 namespace Frappe.Net
 {
+    /// <summary>
+    /// Use the Db class to carry out Frappe database related requests
+    /// It usually accessible through an existing Frappe instance
+    /// </summary>
+    /// <remarks>
+    /// Note that all methods are asynchronous because of the need to make
+    /// remote requests and wait for responses from the remote site
+    /// </remarks>
+    /// <example>
+    /// The example below shows how the get and use the Db object from a Frappe client instance
+    /// <code>
+    /// ...
+    /// int count = await Frappe.Db.GetCountAync("ToDo");
+    /// </code>
+    /// </example>
+    /// <seealso cref="Frappe"/>
     public class Db : JsonObjectParser
     {
         private const string RESOURCE_PATH = "/";
@@ -17,6 +33,10 @@ namespace Frappe.Net
         Frappe frappe;
         TinyRestClient client;
 
+        /// <summary>
+        /// Use the Frappe client to make REST requests to a frappe site
+        /// </summary>
+        /// <param name="frappe">An instance of the Frappe client</param>
         public Db(Frappe frappe)
         {
             this.frappe = frappe;
@@ -75,11 +95,20 @@ namespace Frappe.Net
             } 
             catch (Exception e)
             {
+                log.Error(e.Message);
                 throw;
             }
             return ToObject(response).message;
         }
 
+        /// <summary>
+        /// GEts the counts for doctype based on filters (if applied)
+        /// </summary>
+        /// <param name="doctype">The DocType to count</param>
+        /// <param name="filters">The filters to apply</param>
+        /// <param name="debug">Debug mode on/off</param>
+        /// <param name="cache">Inicates whether the count should be cached</param>
+        /// <returns></returns>
         public async Task<int> GetCountAsync(string doctype, string[,] filters = null, bool debug = false, bool cache = false) {
             var request = client.GetRequest("frappe.client.get_count")
                 .AddQueryParameter("doctype", doctype)
@@ -100,7 +129,6 @@ namespace Frappe.Net
 
         /// <summary>
         /// Returns a document by name or filters
-        /// 
         /// </summary>
         /// <param name="doctype">DocType of the document to be returned</param>
         /// <param name="name">return document of this `name`</param>
@@ -139,19 +167,25 @@ namespace Frappe.Net
 
         /// <summary>
         /// Returns a document by name or filters
-        /// 
         /// </summary>
         /// <param name="doctype">DocType of the document to be returned</param>
         /// <param name="fieldName">Field to be returned (default `name`)</param>
         /// <param name="filters"></param>
-        /// <param name="fieldName">return the document the `name` belongs</param>
+        /// <param name="asDict">Tells frappe to return the document as dict which is then translated to dynamic object</param>
+        /// <param name="debug">Turns on/off response debug</param>
         /// <param name="parent">If name is not set, filter by these values and return the first match</param>
-        /// <returns></returns>
+        /// <returns>The value gotten</returns>
         public string GetValueAync(string doctype, string fieldName = null, string[,] filters = null, bool asDict = false, bool debug = false, string parent = null) {
 
             return "";
         }
 
+        /// <summary>
+        /// Get a value from a single-type document
+        /// </summary>
+        /// <param name="doctype">Name of the document that conatins the value</param>
+        /// <param name="field">The field in the document that holds the value</param>
+        /// <returns></returns>
         public async Task<dynamic> GetSingleValueAysnc(string doctype, string field)
         {
             var request = client.GetRequest("frappe.client.get_single_value")
@@ -171,6 +205,14 @@ namespace Frappe.Net
             return ToObject(response).message;
         }
 
+        /// <summary>
+        /// Set a value using get_doc, group of values
+        /// </summary>
+        /// <param name="doctype">DocType of the document</param>
+        /// <param name="name">Name of the Document</param>
+        /// <param name="fieldName">Name of the field to set value for</param>
+        /// <param name="value">Value to be set</param>
+        /// <returns>The new value</returns>
         public async Task<dynamic> SetValueAsync(string doctype, string name, string fieldName, string value = null)
         {
             var request = client.PostRequest("frappe.client.set_value")
@@ -216,7 +258,6 @@ namespace Frappe.Net
 
         /// <summary>
         /// Insert multiple documents
-        /// 
         /// </summary>
         /// <param name="docs">List containing dictionaries to be inserted</param>
         /// <returns>A list of IDs of the newly inserted documents</returns>
@@ -240,7 +281,6 @@ namespace Frappe.Net
 
         /// <summary>
         /// Update (save) an existing document
-        /// 
         /// </summary>
         /// <param name="doc">Dictionary object with the properties of the document to be updated</param>
         /// <returns>A dynamic object with the properties of the saved doc</returns>
@@ -286,9 +326,8 @@ namespace Frappe.Net
         /// <summary>
         /// Rename document
         /// </summary>
-        /// 
         /// <param name="doctype">Doctype of the document to be renamed</param>
-        /// <param name="oldName"Current `name` of the document to be renamed></param>
+        /// <param name="oldName">The current `name` of the document to be renamed></param>
         /// <param name="newName">New `name` to be set</param>
         /// <param name="merge"></param>
         /// <returns>New name of the document after successful rename</returns>

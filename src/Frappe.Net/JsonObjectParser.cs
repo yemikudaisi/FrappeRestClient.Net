@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Frappe.Net
 {
+    /// <summary>
+    /// Base class for classed that can convert JSOn sting to object
+    /// </summary>
     public abstract class JsonObjectParser
     {
         /// <summary>

@@ -13,7 +13,6 @@ namespace Frappe.Net
     /// <summary>
     /// Entry class in to the frappe REST client
     /// manages all communication to the remote Frappe Framework deployment
-    /// 
     /// </summary>
     public class Frappe : JsonObjectParser
     {
@@ -29,14 +28,20 @@ namespace Frappe.Net
         /// Gets the DB object
         /// </summary>
         public Db Db { get =>_db; }
-        public bool IsAuthenticated { get => _isAuthenticated; set => _isAuthenticated = value; }
+        /// <summary>
+        /// Get's the authentication state of th Frappe client
+        /// </summary>
+        public bool IsAuthenticated { get => _isAuthenticated;}
+        /// <summary>
+        /// An instance of TinyRestClient
+        /// </summary>
+        /// <see cref="TinyRestClient"/>
         public TinyRestClient Client { get => client; set => client = value; }
 
         private static readonly ILog log = LogManager.GetLogger(typeof(Frappe));
 
         /// <summary>
         /// Class contructor
-        /// 
         /// </summary>
         /// <param name="baseUrl">Base url to the frappe site</param>
         /// <param name="debug">if true Frappe will logs all requests in debug console</param>
@@ -53,16 +58,22 @@ namespace Frappe.Net
         /// Changes the route from the default route
         /// to supplied route
         /// </summary>
-        /// 
         /// <param name="route">The new route for subsequent calls</param>
         public void ChangeRoute(string route) {
-            var headers = client.Settings.DefaultHeaders;
-            client = new TinyRestClient(new HttpClient(), $"{_baseUrl}{route}");
-            foreach (var h in headers) {
-                var e = h.Value.GetEnumerator();
-                e.MoveNext();
-                string value = (string)e.Current;
-                client.Settings.DefaultHeaders.Add(h.Key, value);
+            if (_isAccessToken || _isToken)
+            {
+                var headers = client.Settings.DefaultHeaders;
+                client = new TinyRestClient(new HttpClient(), $"{_baseUrl}{route}");
+                foreach (var h in headers)
+                {
+                    var e = h.Value.GetEnumerator();
+                    e.MoveNext();
+                    string value = (string)e.Current;
+                    client.Settings.DefaultHeaders.Add(h.Key, value);
+                }
+            }
+            else if (_isPassword) {
+                throw new InvalidOperationException("Username and password used. Please create new Frappe client instance");
             }
         }
 
@@ -76,7 +87,6 @@ namespace Frappe.Net
 
         /// <summary>
         /// Login to Frappe sight using access token
-        /// 
         /// </summary>
         /// <param name="accessToken">The apps access token</param>
         /// <returns></returns>
@@ -124,7 +134,6 @@ namespace Frappe.Net
         /// <summary>
         /// Adds authorization token to by default to all request headers and
         /// validates it by getting the current logged in user
-        /// 
         /// </summary>
         /// <param name="apiKey">User API key</param>
         /// <param name="apiSecret">User API secret</param>
@@ -157,8 +166,7 @@ namespace Frappe.Net
 
         /// <summary>
         /// Login to a Frappe Framework site with traditional username/email
-        /// and password
-        /// 
+        /// and password 
         /// </summary>
         /// <param name="email">Username or email</param>
         /// <param name="password">user password</param>
@@ -202,7 +210,6 @@ namespace Frappe.Net
 
         /// <summary>
         /// Clear authorization header and reset flags
-        /// 
         /// </summary>
         private void ClearAuthorization() {
             client.Settings.DefaultHeaders.Remove("Authorization");
