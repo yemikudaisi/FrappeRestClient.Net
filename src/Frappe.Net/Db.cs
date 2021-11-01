@@ -393,5 +393,62 @@ namespace Frappe.Net
             }
             return ToObject(response).message;
         }
+
+        /// <summary>
+        /// Attach a file to Document
+        /// </summary>
+        /// 
+        /// <param name="fileName">filename e.g. test-file.txt</param>
+        /// <param name="fileData">Byte array of the file content</param>
+        /// <param name="docType">Reference DocType to attach file to</param>
+        /// <param name="docName">Reference DocName to attach file to</param>
+        /// <param name="folder">Folder to add File into</param>
+        /// <param name="isPrivate">Attach file as private file</param>
+        /// <param name="docField">field to attach to (optional)</param>
+        /// <returns></returns>
+        public async Task<dynamic> AttachFileAsync(string fileName, Byte[] fileData, string docType= null, string docName = null, string folder = null, bool isPrivate = false, string docField= null)
+        {
+
+            var request = client.PostRequest("frappe.client.attach_file")
+                .AddFormParameter("filename", fileName)
+                .AddFormParameter("filedata", Convert.ToBase64String(fileData))
+                .AddFormParameter("decode_base64", true.ToString());
+
+            if (docType != null)
+                request.AddFormParameter("doctype", docType);
+
+            if (docType != null)
+                request.AddFormParameter("docname", docName);
+
+            if (folder != null)
+                request.AddFormParameter("folder", folder);
+
+            if (isPrivate)
+                request.AddFormParameter("is_private", (1).ToString());
+
+            if (docField != null)
+                request.AddFormParameter("docfield", docField);
+
+            string response = "";
+
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (HttpException e)
+            {
+                if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new KeyNotFoundException("The document with the supplied name does not exist");
+                }
+                throw;
+            }
+            catch (Exception e)
+            {
+                log.Error(e.Message); 
+                throw;
+            }
+            return ToObject(response).message;
+        }
     }
 }

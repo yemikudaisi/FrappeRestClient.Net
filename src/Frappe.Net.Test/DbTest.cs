@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Frappe.Net.Test
@@ -164,6 +165,18 @@ namespace Frappe.Net.Test
                 actualType = e.GetType();
             }
             Assert.AreEqual(typeof(KeyNotFoundException), actualType);
+        }
+
+        [TestMethod]
+        public async Task TestAttachFileAsync() {
+            var fileName = $"filename-{GenerateRandom(7)}.txt";
+            var newFile = await Frappe.Db.AttachFileAsync(
+                fileName, 
+                Encoding.ASCII.GetBytes(fileName),
+                "User",
+                "testa@email.com");
+            Assert.AreEqual(newFile.file_url.ToString(), $"/files/{fileName}");
+
         }
     }
 }
