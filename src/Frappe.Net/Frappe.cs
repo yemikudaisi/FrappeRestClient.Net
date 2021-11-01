@@ -45,6 +45,22 @@ namespace Frappe.Net
             BasicConfigurator.Configure();
         }
 
+        public void ChangeRoute(string route) {
+            var headers = client.Settings.DefaultHeaders;
+            client = new TinyRestClient(new HttpClient(), $"{_baseUrl}{route}");
+            foreach (var h in headers) {
+                var e = h.Value.GetEnumerator();
+                e.MoveNext();
+                string value = (string)e.Current;
+                client.Settings.DefaultHeaders.Add(h.Key, value);
+            }
+        }
+
+        public void ResetRoute()
+        {
+            ChangeRoute("/api/method");
+        }
+
         /// <summary>
         /// Login to Frappe sight using access token
         /// 
@@ -86,9 +102,9 @@ namespace Frappe.Net
         /// <returns></returns>
         public Frappe SetToken(string apiKey, string apiSecret)
         {
-
             ClearAuthorization();
             client.Settings.DefaultHeaders.Add("Authorization", $"token {apiKey}:{apiSecret}");
+            this._isToken = true;
             return this;
         }
 

@@ -33,8 +33,24 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestGetAysnc() 
         {
-            var doc = await Frappe.Db.GetAsync("ToDo", "c31b510a68");
-            Assert.AreEqual(doc.description.ToObject<String>(), "test doctype");
+            var name = "340a5acab3";
+            var doc = await Frappe.Db.GetAsync("ToDo", name);
+            Assert.AreEqual(doc.name.ToObject<String>(), "340a5acab3");
+        }
+
+        [TestMethod]
+        public async Task TestGetThrowsExceptionWhenInvalidNameAysnc()
+        {
+            Type actualType = null;
+            try
+            {
+                var doc = await Frappe.Db.GetAsync("ToDo", "xxx");
+            }
+            catch (Exception e)
+            {
+                actualType = e.GetType();
+            }
+            Assert.AreEqual(typeof(KeyNotFoundException), actualType);
         }
 
         [TestMethod]
@@ -49,7 +65,7 @@ namespace Frappe.Net.Test
         {
             string[] fields = { "name", "description" };
 
-            var data = Guid.NewGuid().ToString();
+            var data = $"The {GenerateRandom(3)} of {GenerateRandom(4)} is {GenerateRandom(7)}";
             var list = await Frappe.Db.GetListAsync(
                 "ToDo",
                 fields: fields,
@@ -94,33 +110,60 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestSaveAsync()
         {
-            var frappe = new Frappe(config["baseUrl"], true);
             string[] fields = { "name", "description" };
 
-            var data = Guid.NewGuid().ToString();
-            var list = await frappe.UsePasswordAsync(config["adminUser"], config["adminPassword"]).Result
-                .Db.GetListAsync(
+            var list = await Frappe.Db.GetListAsync(
                 "ToDo",
                 fields:fields,
                 limitPageLength: 1);
             var doc = list[0];
-            doc.description = data;
-            var name = doc.name;
+            var description = $"The {GenerateRandom(3)} of {GenerateRandom(4)} is {GenerateRandom(7)}";
+            doc.description = description;
+            var name = doc.name.ToObject<String>();
             doc.doctype = "ToDo";
-            await frappe.Db.SaveAsync(doc);
-            var updateDoc = await frappe.Db.GetAsync("ToDo", name.ToObject<String>());
+            await Frappe.Db.SaveAsync(doc);
+            var updateDoc = await Frappe.Db.GetAsync("ToDo", name.ToString());
 
-            Assert.AreEqual(data, updateDoc.description.ToObject<String>());
+            Assert.AreEqual(description, updateDoc.description.ToObject<String>());
         }
 
         [TestMethod]
         public async Task TestRenameDocAsync()
         {
+
+            string oldName = "testb@email.com";
+            string newName = "testa@email.com";
+
+            var doc = await Frappe.Db.GetAsync("User", oldName);
+            var renamedDoc = await Frappe.Db.renameDoc(
+                "User", 
+                oldName, 
+                newName
+            );
+            Assert.AreEqual(newName, renamedDoc);
+        }
+
+        [TestMethod]
+        public async Task TestDeleteDocAsync()
+        {
             string[] fields = { "name", "description" };
 
-            var doc = await Frappe.Db.GetAsync("User", config["testEmail"]);
-            var renamedDoc = await Frappe.Db.renameDoc("ToDo", doc.name.ToObject<String>(), config["altTestEmail"]);
-            Assert.AreEqual(config["altTestEmail"], renamedDoc.name.ToObject<String>());
+            var newDoc = await Frappe.Db.InsertAsync(new Dictionary<string, object> {
+                    { "doctype", "ToDo"},
+                    { "description", $"{GenerateRandom(5)} of {GenerateRandom(3)}"}
+                });
+            await Frappe.Db.DeleteAsync("ToDo", newDoc.name.ToObject<String>());
+
+            Type actualType = null;
+            try
+            {
+                var doc = await Frappe.Db.GetAsync("ToDo", newDoc.name.ToObject<String>());
+            }
+            catch (Exception e)
+            {
+                actualType = e.GetType();
+            }
+            Assert.AreEqual(typeof(KeyNotFoundException), actualType);
         }
     }
 }

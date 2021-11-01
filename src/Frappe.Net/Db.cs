@@ -120,9 +120,20 @@ namespace Frappe.Net
             if (parent != null)
                 request.AddQueryParameter("parent", parent);
 
-            // TODO: Use all method parameters
+            var response = "";
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (HttpException e)
+            {
+                if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new KeyNotFoundException("The document with the supplied name does not exist");
+                }
+                throw;
+            }
 
-            var response = await request.ExecuteAsStringAsync();
             return ToObject(response).message;
         }
 
@@ -233,22 +244,42 @@ namespace Frappe.Net
         /// </summary>
         /// <param name="doc">Dictionary object with the properties of the document to be updated</param>
         /// <returns>A dynamic object with the properties of the saved doc</returns>
-        public async Task<dynamic> SaveAsync(object doc)
+        public async Task<dynamic> SaveAsync(dynamic doc)
         {
-            // FIX: Solve issue where Frappe returns error indicating that the document has been modified after the doc was loaded
-            var request = client.PostRequest("frappe.client.save")
-                .AddQueryParameter("doc", JsonConvert.SerializeObject(doc));
+            // TODO: Find out why ```frappe.client.save``` does not work
+            string doctype, name = "";
+            if (doc.GetType() == typeof(Dictionary<String, object>))
+            {
+                doctype = ((Dictionary<String, object>)doc)["doctype"].ToString();
+                name = ((Dictionary<String, object>)doc)["name"].ToString();
+            }
+            else { 
+                doctype = doc.doctype;
+                name = doc.name;
+            }
+
+            // HACK: Change API route from /api/method/frappe.client.save
+            // to /api/resource/:doctype/:name format
+            frappe.ChangeRoute($"/api/resource/{doctype}");
+            IRequest request = frappe.Client.PutRequest(name)
+                .AddStringContent(JsonConvert.SerializeObject(doc));
             string response = "";
 
             try
             {
                 response = await request.ExecuteAsStringAsync();
             }
-            catch (Exception)
+            catch (HttpException e)
             {
-
-                throw;
+                log.Error($"{e.StatusCode} : {e.Message}");
+                if (e.StatusCode == System.Net.HttpStatusCode.ExpectationFailed) {
+                    throw new InvalidOperationException("Document not saved");
+                }
             }
+            catch (Exception e) {
+                log.Error(e.Message);
+            }
+            frappe.ResetRoute();
             return ToObject(response).message;
         }
 
@@ -262,13 +293,13 @@ namespace Frappe.Net
         /// <param name="merge"></param>
         /// <returns>New name of the document after successful rename</returns>
 
-        public async Task<string> renameDoc(string doctype, string oldName, string newName, bool merge = false) {
+        public async Task<string> renameDoc(string doctype, string oldName, string newName, int merge = 0) {
             // FIX: Find out reason empty response with actual rename
 
-            var request = client.PostRequest("frappe.client.rename_doc")
+            var request = client.PostRequest("frappe.rename_doc")
                 .AddQueryParameter("doctype", doctype)
-                .AddQueryParameter("old_name", oldName)
-                .AddQueryParameter("new_name", newName)
+                .AddQueryParameter("old", oldName)
+                .AddQueryParameter("new", newName)
                 .AddQueryParameter("merge", merge.ToString());
             string response = "";
 
@@ -276,12 +307,13 @@ namespace Frappe.Net
             {
                 response = await request.ExecuteAsStringAsync();
             }
-            catch (Exception)
+            catch (HttpException e)
             {
-                var responseObj = ToObject(response);
-                var server_messages = responseObj._server_messages;
-                var message = server_messages[0];
-                throw new UnauthorizedAccessException(responseObj._server_messages);
+                log.Error($"{e.StatusCode} : {e.Message}");
+                if (e.StatusCode == System.Net.HttpStatusCode.ExpectationFailed)
+                {
+                    throw new InvalidOperationException("Unable to rename document");
+                }
             }
             return ToObject(response).message.ToObject<string>();
         }
@@ -329,6 +361,34 @@ namespace Frappe.Net
             catch (Exception)
             {
 
+                throw;
+            }
+            return ToObject(response).message;
+        }
+
+        /// <summary>
+        /// Delete a remote document
+        /// </summary>
+        /// <param name="doctype">DocType of the document to be deleted</param>
+        /// <param name="name">Name of the document to be deleted</param>
+        /// <returns></returns>
+        public async Task<dynamic> DeleteAsync(string doctype, string name)
+        {
+            var request = client.PostRequest("frappe.client.delete")
+                .AddQueryParameter("doctype", doctype)
+                .AddQueryParameter("name", name);
+            string response = "";
+
+            try
+            {
+                response = await request.ExecuteAsStringAsync();
+            }
+            catch (HttpException e)
+            {
+                if(e.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    throw new KeyNotFoundException("The document with the supplied name does not exist");
+                }
                 throw;
             }
             return ToObject(response).message;
