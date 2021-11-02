@@ -1,10 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Frappe.Net.Test
 {
@@ -12,7 +9,8 @@ namespace Frappe.Net.Test
     {
         protected IConfiguration config;
         private FrappeRestClient frappe;
-        public BaseTest() {
+        public BaseTest()
+        {
             config =
                 new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
@@ -22,12 +20,14 @@ namespace Frappe.Net.Test
                 .SetToken(config["apiKey"], config["apiSecret"]);
         }
 
-        public FrappeRestClient Frappe {
-            get { return frappe;  }
+        public FrappeRestClient Frappe
+        {
+            get { return frappe; }
         }
 
         private static Random random = new Random();
-        public string GenerateRandom(int length) {
+        public string GenerateRandom(int length)
+        {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());

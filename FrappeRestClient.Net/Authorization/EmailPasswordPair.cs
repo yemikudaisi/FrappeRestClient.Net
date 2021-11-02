@@ -1,7 +1,11 @@
-﻿namespace FrappeRestClient.Net.Authorization
+﻿// <copyright file="EmailPasswordPair.cs" company="Yemi Kudaisi">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+
+namespace FrappeRestClient.Net.Authorization
 {
     /// <summary>
-    /// Helper class for holding Frappe based email password pair
+    /// Helper class for holding Frappe based email password pair.
     /// </summary>
     public class EmailPasswordPair
     {

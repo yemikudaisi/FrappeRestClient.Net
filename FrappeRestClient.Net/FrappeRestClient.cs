@@ -1,4 +1,8 @@
-﻿namespace Frappe.Net
+﻿// <copyright file="FrappeRestClient.cs" company="Yemi Kudaisi">
+// Copyright (c) Yemi Kudaisi. All rights reserved.
+// </copyright>
+
+namespace Frappe.Net
 {
     using System;
     using System.Net.Http;
@@ -7,7 +11,6 @@
     using global::FrappeRestClient.Net.Authorization;
     using log4net;
     using log4net.Config;
-    using Newtonsoft.Json.Linq;
     using Tiny.RestClient;
 
     /// <summary>
@@ -16,6 +19,7 @@
     /// </summary>
     public class FrappeRestClient : JsonObjectParser
     {
+        private static readonly ILog Log = LogManager.GetLogger(typeof(FrappeRestClient));
         private string baseUrl;
         private TinyRestClient client;
         private bool isAuthenticated;
@@ -25,29 +29,11 @@
         private Db db;
 
         /// <summary>
-        /// Gets the DB object.
-        /// </summary>
-        public Db Db { get => this.db; }
-
-        /// <summary>
-        /// Gets a value indicating whether the Frappe client is authenticated.
-        /// </summary>
-        public bool IsAuthenticated { get => this.isAuthenticated;}
-
-        /// <summary>
-        /// Gets or sets an instance of <see cref="TinyRestClient">TinyRestClient</see>.
-        /// </summary>
-        /// <see cref="TinyRestClient"/>
-        public TinyRestClient Client { get => this.client; set => this.client = value; }
-
-        private static readonly ILog log = LogManager.GetLogger(typeof(FrappeRestClient));
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="FrappeRestClient"/> class.
         /// </summary>
         /// <param name="baseUrl">Base url to the frappe site.</param>
         /// <param name="debug">If true, Frappe will logs all requests in debug console.</param>
-        public FrappeRestClient(string baseUrl, bool debug=false)
+        public FrappeRestClient(string baseUrl, bool debug = false)
         {
             this.baseUrl = baseUrl;
             this.client = new TinyRestClient(new HttpClient(), $"{baseUrl}/api/method");
@@ -59,6 +45,22 @@
             this.db = new Db(this);
             BasicConfigurator.Configure();
         }
+
+        /// <summary>
+        /// Gets the DB object.
+        /// </summary>
+        public Db Db { get => this.db; }
+
+        /// <summary>
+        /// Gets a value indicating whether the Frappe client is authenticated.
+        /// </summary>
+        public bool IsAuthenticated { get => this.isAuthenticated; }
+
+        /// <summary>
+        /// Gets or sets an instance of <see cref="TinyRestClient">TinyRestClient</see>.
+        /// </summary>
+        /// <see cref="TinyRestClient"/>
+        public TinyRestClient Client { get => this.client; set => this.client = value; }
 
         /// <summary>
         /// Changes the route from the default route
@@ -79,7 +81,8 @@
                     this.client.Settings.DefaultHeaders.Add(h.Key, value);
                 }
             }
-            else if (this.isPassword) {
+            else if (this.isPassword)
+            {
                 throw new InvalidOperationException("Username and password used. Please create new Frappe client instance");
             }
         }
@@ -147,7 +150,8 @@
         /// <param name="apiKey">User API key.</param>
         /// <param name="apiSecret">User API secret.</param>
         /// <returns>The current instance of FrappeRestClient for fluent code.</returns>
-        public async Task<FrappeRestClient> UseTokenAsync(string apiKey, string apiSecret) {
+        public async Task<FrappeRestClient> UseTokenAsync(string apiKey, string apiSecret)
+        {
             this.ClearAuthorization();
             this.client.Settings.DefaultHeaders.Add("Authorization", $"token {apiKey}:{apiSecret}");
 
@@ -162,6 +166,7 @@
                 {
                     throw new AuthenticationException("Invalid login credential");
                 }
+
                 if (e.StatusCode == System.Net.HttpStatusCode.InternalServerError)
                 {
                     throw new AuthenticationException("Server error");
@@ -185,7 +190,7 @@
             this.ClearAuthorization();
             try
             {
-                await this.client.PostRequest("login", new EmailPasswordPair() { usr = email, pwd = password})
+                await this.client.PostRequest("login", new EmailPasswordPair() { usr = email, pwd = password })
                     .ExecuteAsStringAsync();
             }
             catch (HttpException e)
@@ -193,7 +198,7 @@
                 if (e.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     var msg = "Invalid login credential";
-                    log.Error($"{msg} >>> {e.Message}");
+                    Log.Error($"{msg} >>> {e.Message}");
                     throw new AuthenticationException();
                 }
 
@@ -212,16 +217,36 @@
         /// Gets the currently logged user.
         /// </summary>
         /// <returns>The name of the logged in user.</returns>
-        public async Task<string> GetLoggedUserAsync() {
-            var response =  await client.GetRequest("frappe.auth.get_logged_user")
+        public async Task<string> GetLoggedUserAsync()
+        {
+            var response = await this.client.GetRequest("frappe.auth.get_logged_user")
                     .ExecuteAsStringAsync();
-            return ToObject(response).message.ToString();
+            return this.ToObject(response).message.ToString();
+        }
+
+        /// <summary>
+        /// Logout a frappe user.
+        /// </summary>
+        public void Logout()
+        {
+            this.ClearAuthorization();
+        }
+
+        /// <summary>
+        /// Pings the frappe site.
+        /// </summary>
+        /// <returns>Returns the reponse from the Frappe site.</returns>
+        public async Task<string> PingAsync()
+        {
+            var response = await this.client.GetRequest("frappe.ping").ExecuteAsStringAsync();
+            return this.ToObject(response).message.ToString();
         }
 
         /// <summary>
         /// Clear authorization header and reset flags.
         /// </summary>
-        private void ClearAuthorization() {
+        private void ClearAuthorization()
+        {
             this.client.Settings.DefaultHeaders.Remove("Authorization");
             this.ResetFlags();
         }
@@ -229,29 +254,12 @@
         /// <summary>
         /// Resets all flags to false.
         /// </summary>
-        private void ResetFlags() {
+        private void ResetFlags()
+        {
             this.isAuthenticated = false;
             this.isToken = false;
             this.isPassword = false;
             this.isAccessToken = false;
-        }
-
-        /// <summary>
-        /// Logout a frappe user
-        /// </summary>
-        public void Logout()
-        {
-            ClearAuthorization();
-        }
-
-        /// <summary>
-        /// Pings the frappe site
-        /// </summary>
-        /// <returns>Returns the reponse from the Frappe site</returns>
-        public async Task<string> PingAsync()
-        {
-            var response = await client.GetRequest("frappe.ping").ExecuteAsStringAsync();
-            return ToObject(response).message.ToString();
         }
     }
 }

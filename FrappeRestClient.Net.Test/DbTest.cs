@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,7 +30,7 @@ namespace Frappe.Net.Test
         }
 
         [TestMethod]
-        public async Task TestGetAysnc() 
+        public async Task TestGetAysnc()
         {
             var name = "340a5acab3";
             var doc = await Frappe.Db.GetAsync("ToDo", name);
@@ -58,7 +56,7 @@ namespace Frappe.Net.Test
         public async Task TestGetValueAsync()
         {
             string[,] filter = { { "name", "=", "bafc4c81fe" } };
-            var value = await Frappe.Db.GetValueAsync("ToDo", "description",filter);
+            var value = await Frappe.Db.GetValueAsync("ToDo", "description", filter);
             Assert.AreEqual("The J07 of G50X is 8OFTOCZ", value.description.ToString());
         }
 
@@ -66,7 +64,7 @@ namespace Frappe.Net.Test
         public async Task TestGetSingleValueAsync()
         {
             var value = await Frappe.Db.GetSingleValueAsync("Website Settings", "website_theme");
-            Assert.AreEqual(value.ToObject<String>(), "Standard");
+            Assert.AreEqual(value, "Standard");
         }
 
         [TestMethod]
@@ -80,10 +78,10 @@ namespace Frappe.Net.Test
                 fields: fields,
                 limitPageLength: 1);
             var doc = list[0];
-            await Frappe.Db.SetValueAsync("ToDo",doc.name.ToObject<String>(), "description", data);
+            await Frappe.Db.SetValueAsync("ToDo", doc.name.ToObject<String>(), "description", data);
             var updateDoc = await Frappe.Db.GetAsync("ToDo", doc.name.ToObject<String>());
 
-            Assert.AreEqual(data, updateDoc.description.ToObject<String>());
+            Assert.AreEqual(data, updateDoc.description.ToString());
         }
 
         [TestMethod]
@@ -123,7 +121,7 @@ namespace Frappe.Net.Test
 
             var list = await Frappe.Db.GetListAsync(
                 "ToDo",
-                fields:fields,
+                fields: fields,
                 limitPageLength: 1);
             var doc = list[0];
             var description = $"The {GenerateRandom(3)} of {GenerateRandom(4)} is {GenerateRandom(7)}";
@@ -144,9 +142,9 @@ namespace Frappe.Net.Test
             string newName = "testa@email.com";
 
             var doc = await Frappe.Db.GetAsync("User", oldName);
-            var renamedDoc = await Frappe.Db.renameDoc(
-                "User", 
-                oldName, 
+            var renamedDoc = await Frappe.Db.RenameDocAsync(
+                "User",
+                oldName,
                 newName
             );
             Assert.AreEqual(newName, renamedDoc);
@@ -176,10 +174,11 @@ namespace Frappe.Net.Test
         }
 
         [TestMethod]
-        public async Task TestAttachFileAsync() {
+        public async Task TestAttachFileAsync()
+        {
             var fileName = $"filename-{GenerateRandom(7)}.txt";
             var newFile = await Frappe.Db.AttachFileAsync(
-                fileName, 
+                fileName,
                 Encoding.ASCII.GetBytes(fileName),
                 "User",
                 "testa@email.com");

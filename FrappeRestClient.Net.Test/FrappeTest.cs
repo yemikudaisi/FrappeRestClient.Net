@@ -71,7 +71,8 @@ namespace Frappe.Net.Test
         }
 
         [TestMethod]
-        public async Task TestIsLoggedOutAsync() {
+        public async Task TestIsLoggedOutAsync()
+        {
             var frappe = new FrappeRestClient(config["baseUrl"]);
             await frappe.UseTokenAsync(config["apiKey"], config["apiSecret"]);
             frappe.Logout();
@@ -90,7 +91,8 @@ namespace Frappe.Net.Test
         }
 
         [TestMethod]
-        public async Task TestPing() {
+        public async Task TestPing()
+        {
             var frappe = new FrappeRestClient(config["baseUrl"]);
             var response = await frappe.PingAsync();
             Assert.AreEqual("pong", response);

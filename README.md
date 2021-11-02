@@ -67,7 +67,7 @@ Console.WriteLine(user); // administrator
 
 ### DB Funcitons
 
-The methods implemented corellates to RESTful requests that are mapped to the `/api/resource` in Frappe. Also, some ```frappe.client``` functions are implemented here.
+The methods implemented corellates to RESTful requests that are mapped to the `/api/resource` in Frappe. Also, some other ```frappe.client``` APImethods are implemented here.
 
 #### Listing Documents
 
