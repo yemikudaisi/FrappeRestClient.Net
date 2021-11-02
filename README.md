@@ -187,7 +187,9 @@ Console.WriteLine((int)docs.Count); // 2
 ```cs
 var doc = await Frappe.Db.GetAsync("ToDo", "xxxxxx");
 doc.description = "new description";
-doc.doctype = "ToDo"; // Note that the document received from Get does not contain a property for ```doctype``` hence the need to add it before save
+// Note that the document received from Get will not contain a
+// ```doctype``` property for  hence the need to add it before save
+doc.doctype = "ToDo"; 
 await Frappe.Db.SaveAsync(doc);
 var updateDoc = await Frappe.Db.GetAsync("ToDo", doc.name.ToString());
 ```
