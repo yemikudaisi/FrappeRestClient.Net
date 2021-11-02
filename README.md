@@ -1,6 +1,7 @@
 # FrappeRestClient.Net
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Build status](https://ci.appveyor.com/api/projects/status/9w5vjt7yq2cpbo1u/branch/main?svg=true)](https://ci.appveyor.com/project/yemikudaisi/frapperestclient-net/branch/main)
 
 .Net REST client for [Frappe Framework](https://frappeframework.com/)
 

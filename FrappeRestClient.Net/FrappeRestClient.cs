@@ -185,7 +185,7 @@
             this.ClearAuthorization();
             try
             {
-                await this.client.PostRequest("login", $"{{ 'usr': {email}, 'pwd' = {password} }}")
+                await this.client.PostRequest("login", new EmailPasswordPair() { usr = email, pwd = password})
                     .ExecuteAsStringAsync();
             }
             catch (HttpException e)
