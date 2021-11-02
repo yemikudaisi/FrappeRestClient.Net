@@ -57,7 +57,7 @@ namespace Frappe.Net.Test
         {
             string[,] filter = { { "name", "=", "bafc4c81fe" } };
             var value = await Frappe.Db.GetValueAsync("ToDo", "description", filter);
-            Assert.AreEqual("The J07 of G50X is 8OFTOCZ", value.description.ToString());
+            Assert.AreEqual("The J07 of G50X is 8OFTOCZ", value);
         }
 
         [TestMethod]
@@ -109,8 +109,7 @@ namespace Frappe.Net.Test
                     { "description",$"{GenerateRandom(5)} {GenerateRandom(10)}"}
                 }
             };
-            var docs = await frappe.UsePasswordAsync(config["adminUser"], config["adminPassword"]).Result
-                .Db.InsertManyAsync(manyDocs);
+            var docs = await Frappe.Db.InsertManyAsync(manyDocs);
             Assert.AreEqual((int)docs.Count, 2);
         }
 

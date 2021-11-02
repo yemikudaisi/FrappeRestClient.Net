@@ -1,7 +1,7 @@
 # FrappeRestClient.Net
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Build status](https://ci.appveyor.com/api/projects/status/9w5vjt7yq2cpbo1u/branch/main?svg=true)](https://ci.appveyor.com/project/yemikudaisi/frapperestclient-net/branch/main)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 .Net REST client for [Frappe Framework](https://frappeframework.com/)
 
@@ -112,28 +112,82 @@ string[,] filters = {
         "status", "=", "Closed" 
     } 
 };
-int count = Frappe.Db.GetCount("ToDo"); // count all close ToDo
+int count = frappe.Db.GetCount("ToDo"); // count all close ToDo
 ```
 
 #### Get Single Document
 
 To get a document with a document name use the ```GetAsync``` method.
-```
-var doc = await Frappe.Db.GetAsync("ToDo", "340a5acab3");
+```cs
+...
+var doc = await frappe.Db.GetAsync("ToDo", "340a5acab3");
 Console.WriteLine(doc.name); // 340a5acab3
 ```
 
 This method will throw a ```KeyNotFoundException``` if the document for the suplied name is not found.
 
-#### Get Single Value from Document
+#### Get a Value from Document
 
+```cs
+...
+string[,] filter = { { "name", "=", "bafc4c81fe" } };
+var value = await frappe.Db.GetValueAsync("ToDo", "description", filter);
+Console.WriteLine(value) // Some ToDo description
+```
 
 #### Get Single Value from Single-Type Document
 
+```cs
+...
+var value = await frappe.Db.GetSingleValueAsync("Website Settings", "website_theme");
+Console.WriteLine(doc.name) // Standard
+```
+
 #### Set a Single Value in a Document
 
+```cs
+...
+// returns the updated document as a ```dynamic``` object
+await frappe.Db.SetValueAsync("ToDo", doc.name.ToObject<string>(), "description", data);
+```
+ 
 #### Insert Document
+
+```cs
+...
+var doc = await frappe.Db.InsertAsync(
+    new Dictionary<string, object> {
+        { "doctype", "ToDo"},
+        { "description", desc}
+    }
+);
+Console.WriteLine(doc.description.ToString()); // desc
+```
 
 #### Insert Many Document
 
+```cs
+...
+Dictionary<string, object>[] manyDocs = {
+    new Dictionary<string, object> {
+        { "doctype", "ToDo"},
+        { "description","Description 1"}
+    },
+    new Dictionary<string, object> {
+        { "doctype", "ToDo"},
+        { "description", "Description 2"}
+    }
+};
+var docs = await frappe.Db.InsertManyAsync(manyDocs);
+Console.WriteLine((int)docs.Count); // 2
+```
+
 #### Update (save) an existing Document
+
+```cs
+var doc = await Frappe.Db.GetAsync("ToDo", "xxxxxx");
+doc.description = "new description";
+doc.doctype = "ToDo"; // Note that the document received from Get does not contain a property for ```doctype``` hence the need to add it before save
+await Frappe.Db.SaveAsync(doc);
+var updateDoc = await Frappe.Db.GetAsync("ToDo", doc.name.ToString());
+```

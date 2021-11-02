@@ -207,7 +207,7 @@ namespace Frappe.Net
         /// <param name="debug">Turns on/off response debug.</param>
         /// <param name="parent">If name is not set, filter by these values and return the first match.</param>
         /// <returns>The value gotten.</returns>
-        public async Task<dynamic> GetValueAsync(string doctype, string fieldName = null, string[,] filters = null, bool asDict = true, bool debug = false, string parent = null)
+        public async Task<string> GetValueAsync(string doctype, string fieldName = null, string[,] filters = null, bool asDict = true, bool debug = false, string parent = null)
         {
             var request = this.client.GetRequest("frappe.client.get_value")
                 .AddQueryParameter("doctype", doctype);
@@ -249,7 +249,8 @@ namespace Frappe.Net
                 throw;
             }
 
-            return this.ToObject(response).message;
+            var value = this.ToObject(response).message[fieldName];
+            return value.ToString();
         }
 
         /// <summary>
