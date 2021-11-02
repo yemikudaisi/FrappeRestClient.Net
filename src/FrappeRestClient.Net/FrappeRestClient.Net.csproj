@@ -10,6 +10,10 @@
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.12" />
+    <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Tiny.RestClient" Version="1.7.1" />
   </ItemGroup>
 

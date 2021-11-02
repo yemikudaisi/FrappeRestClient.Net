@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Frappe.Net\Frappe.Net.csproj" />
+    <ProjectReference Include="..\FrappeRestClient.Net\FrappeRestClient.Net.csproj" />
   </ItemGroup>
 
   <ItemGroup>

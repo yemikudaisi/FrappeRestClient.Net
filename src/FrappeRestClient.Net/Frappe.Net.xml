@@ -1,22 +1,22 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>FrappeRestClient.Net</name>
+        <name>Frappe.Net</name>
     </assembly>
     <members>
-        <member name="T:FrappeRestClient.Net.Authorization.EmailPasswordPair">
+        <member name="T:Frappe.Net.Authorization.EmailPasswordPair">
             <summary>
             Helper class for holding Frappe based email password pair
             </summary>
         </member>
-        <member name="P:FrappeRestClient.Net.Authorization.EmailPasswordPair.usr">
+        <member name="P:Frappe.Net.Authorization.EmailPasswordPair.usr">
             <summary>
-            Gets or sets the username or email.
+            The username or email
             </summary>
         </member>
-        <member name="P:FrappeRestClient.Net.Authorization.EmailPasswordPair.pwd">
+        <member name="P:Frappe.Net.Authorization.EmailPasswordPair.pwd">
             <summary>
-            Gets or sets user password.
+            The user password
             </summary>
         </member>
         <member name="T:Frappe.Net.Db">
@@ -35,9 +35,9 @@
             int count = await Frappe.Db.GetCountAync("ToDo");
             </code>
             </example>
-            <seealso cref="T:Frappe.Net.FrappeRestClient"/>
+            <seealso cref="T:Frappe.Net.Frappe"/>
         </member>
-        <member name="M:Frappe.Net.Db.#ctor(Frappe.Net.FrappeRestClient)">
+        <member name="M:Frappe.Net.Db.#ctor(Frappe.Net.Frappe)">
             <summary>
             Use the Frappe client to make REST requests to a frappe site
             </summary>
@@ -177,103 +177,98 @@
             <param name="docField">field to attach to (optional)</param>
             <returns></returns>
         </member>
-        <member name="T:Frappe.Net.FrappeRestClient">
+        <member name="T:Frappe.Net.Frappe">
             <summary>
             Entry class in to the frappe REST client
-            manages all communication to the remote Frappe Framework deployment.
+            manages all communication to the remote Frappe Framework deployment
             </summary>
         </member>
-        <member name="P:Frappe.Net.FrappeRestClient.Db">
+        <member name="P:Frappe.Net.Frappe.Db">
             <summary>
-            Gets the DB object.
+            Gets the DB object
             </summary>
         </member>
-        <member name="P:Frappe.Net.FrappeRestClient.IsAuthenticated">
+        <member name="P:Frappe.Net.Frappe.IsAuthenticated">
             <summary>
-            Gets a value indicating whether the Frappe client is authenticated.
+            Get's the authentication state of th Frappe client
             </summary>
         </member>
-        <member name="P:Frappe.Net.FrappeRestClient.Client">
+        <member name="P:Frappe.Net.Frappe.Client">
             <summary>
-            Gets or sets an instance of <see cref="T:Tiny.RestClient.TinyRestClient">TinyRestClient</see>.
+            An instance of TinyRestClient
             </summary>
             <see cref="T:Tiny.RestClient.TinyRestClient"/>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.#ctor(System.String,System.Boolean)">
+        <member name="M:Frappe.Net.Frappe.#ctor(System.String,System.Boolean)">
             <summary>
-            Initializes a new instance of the <see cref="T:Frappe.Net.FrappeRestClient"/> class.
+            Class contructor
             </summary>
-            <param name="baseUrl">Base url to the frappe site.</param>
-            <param name="debug">If true, Frappe will logs all requests in debug console.</param>
+            <param name="baseUrl">Base url to the frappe site</param>
+            <param name="debug">if true Frappe will logs all requests in debug console</param>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.ChangeRoute(System.String)">
+        <member name="M:Frappe.Net.Frappe.ChangeRoute(System.String)">
             <summary>
             Changes the route from the default route
-            to supplied route.
+            to supplied route
             </summary>
-            <param name="route">The new route for subsequent calls.</param>
+            <param name="route">The new route for subsequent calls</param>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.ResetRoute">
+        <member name="M:Frappe.Net.Frappe.ResetRoute">
             <summary>
-            Reset the API route back to default (/api/method/).
+            Reset the API route back to default (/api/method/)
             </summary>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.UseAccessTokenAsync(System.String)">
+        <member name="M:Frappe.Net.Frappe.UseAccessTokenAsync(System.String)">
             <summary>
-            Login to Frappe sight using access token.
+            Login to Frappe sight using access token
             </summary>
-            <param name="accessToken">The apps access token.</param>
-            <returns>The current instance of FrappeRestClient for fluent code.</returns>
+            <param name="accessToken">The apps access token</param>
+            <returns></returns>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.SetToken(System.String,System.String)">
+        <member name="M:Frappe.Net.Frappe.SetToken(System.String,System.String)">
             <summary>
             Add authorization token by default to all request headers
-            whithout validation.
+            whithout validation
             </summary>
-            <param name="apiKey">User API key.</param>
-            <param name="apiSecret">User API secret.</param>
-            <returns>The current instance of FrappeRestClient for fluent code.</returns>
+            <param name="apiKey">User API key</param>
+            <param name="apiSecret">User API secret</param>
+            <returns></returns>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.UseTokenAsync(System.String,System.String)">
+        <member name="M:Frappe.Net.Frappe.UseTokenAsync(System.String,System.String)">
             <summary>
             Adds authorization token to by default to all request headers and
-            validates it by getting the current logged in user.
+            validates it by getting the current logged in user
             </summary>
-            <param name="apiKey">User API key.</param>
-            <param name="apiSecret">User API secret.</param>
-            <returns>The current instance of FrappeRestClient for fluent code.</returns>
+            <param name="apiKey">User API key</param>
+            <param name="apiSecret">User API secret</param>
+            <returns></returns>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.UsePasswordAsync(System.String,System.String)">
+        <member name="M:Frappe.Net.Frappe.UsePasswordAsync(System.String,System.String)">
             <summary>
             Login to a Frappe Framework site with traditional username/email
             and password 
             </summary>
-            <param name="email">Username or email.</param>
-            <param name="password">user password.</param>
-            <returns>The current instance of FrappeRestClient for fluent code.</returns>
+            <param name="email">Username or email</param>
+            <param name="password">user password</param>
+            <returns></returns>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.GetLoggedUserAsync">
+        <member name="M:Frappe.Net.Frappe.GetLoggedUserAsync">
             <summary>
-            Gets the currently logged user.
+            Gets the currently logged user
             </summary>
-            <returns>The name of the logged in user.</returns>
+            <returns>The name of the logged in user</returns>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.ClearAuthorization">
+        <member name="M:Frappe.Net.Frappe.ClearAuthorization">
             <summary>
-            Clear authorization header and reset flags.
-            </summary>
-        </member>
-        <member name="M:Frappe.Net.FrappeRestClient.ResetFlags">
-            <summary>
-            Resets all flags to false.
+            Clear authorization header and reset flags
             </summary>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.Logout">
+        <member name="M:Frappe.Net.Frappe.Logout">
             <summary>
             Logout a frappe user
             </summary>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.PingAsync">
+        <member name="M:Frappe.Net.Frappe.PingAsync">
             <summary>
             Pings the frappe site
             </summary>

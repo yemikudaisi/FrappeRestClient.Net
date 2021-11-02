@@ -25,19 +25,19 @@ namespace Frappe.Net
     /// int count = await Frappe.Db.GetCountAync("ToDo");
     /// </code>
     /// </example>
-    /// <seealso cref="Frappe"/>
+    /// <seealso cref="FrappeRestClient"/>
     public class Db : JsonObjectParser
     {
         private const string RESOURCE_PATH = "/";
         private static readonly ILog log = LogManager.GetLogger(typeof(Db));
-        Frappe frappe;
+        FrappeRestClient frappe;
         TinyRestClient client;
 
         /// <summary>
         /// Use the Frappe client to make REST requests to a frappe site
         /// </summary>
         /// <param name="frappe">An instance of the Frappe client</param>
-        public Db(Frappe frappe)
+        public Db(FrappeRestClient frappe)
         {
             this.frappe = frappe;
             this.client = frappe.Client;

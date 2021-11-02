@@ -100,7 +100,7 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestInsertManyAsync()
         {
-            var frappe = new Frappe(config["baseUrl"], true);
+            var frappe = new FrappeRestClient(config["baseUrl"], true);
             Dictionary<string, object>[] manyDocs = {
                 new Dictionary<string, object> {
                     { "doctype", "ToDo"},

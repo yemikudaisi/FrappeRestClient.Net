@@ -11,18 +11,18 @@ namespace Frappe.Net.Test
     public class BaseTest
     {
         protected IConfiguration config;
-        private Frappe frappe;
+        private FrappeRestClient frappe;
         public BaseTest() {
             config =
                 new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", false)
                     .Build();
-            frappe = new Frappe(config["baseUrl"], true)
+            frappe = new FrappeRestClient(config["baseUrl"], true)
                 .SetToken(config["apiKey"], config["apiSecret"]);
         }
 
-        public Frappe Frappe {
+        public FrappeRestClient Frappe {
             get { return frappe;  }
         }
 
