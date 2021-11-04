@@ -2,6 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>Yemi Kudaisi</Authors>
+    <Company>Yemi Kudaisi</Company>
+    <Description>.Net REST client for Frappe Framework</Description>
+    <Copyright>Copyright © 2021</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/yemikudaisi/FrappeRestClient.Net</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/yemikudaisi/FrappeRestClient.Net</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>api,rest,api-client,frappe-framework</PackageTags>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -15,6 +27,13 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Tiny.RestClient" Version="1.7.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>
