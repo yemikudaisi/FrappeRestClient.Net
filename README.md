@@ -1,5 +1,5 @@
 # FrappeRestClient.Net
-[![NuGet](https://img.shields.io/nuget/v/Tiny.RestClient.svg?label=NuGet)](https://www.nuget.org/packages/FrappeRestClient.Net/)
+[![NuGet](https://img.shields.io/nuget/v/FrappeRestClient.Net.svg?label=NuGet)](https://www.nuget.org/packages/FrappeRestClient.Net/)
 [![Build status](https://ci.appveyor.com/api/projects/status/9w5vjt7yq2cpbo1u/branch/main?svg=true)](https://ci.appveyor.com/project/yemikudaisi/frapperestclient-net/branch/main)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
