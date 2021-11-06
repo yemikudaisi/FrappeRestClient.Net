@@ -1,3 +1,4 @@
+using FrappeRestClient.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.IO;
@@ -43,6 +44,14 @@ namespace Frappe.Net.Test
             await frappe.UsePasswordAsync(config["regularUser"], config["regularPassword"]);
             var user = await frappe.GetLoggedUserAsync();
             Assert.AreEqual(config["regularUser"], user);
+        }
+
+        [TestMethod]
+        public async Task TestIfCorrectLoginCookiesAsync()
+        {
+            var frappe = new FrappeRestClient(config["baseUrl"]);
+            var cookies = await frappe.UsePasswordAsync(config["regularUser"], config["regularPassword"]);
+            Assert.AreEqual(config["regularUser"], cookies[Cookies.FieldNames.UserId]);
         }
 
         [TestMethod]

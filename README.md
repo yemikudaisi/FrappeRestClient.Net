@@ -45,9 +45,11 @@ frappe.UseTokenAync("api-key", "api-secret");
 
 #### 2. Password Based 
 
+Loggin in with password yields cookie data (```IDictionary<string, string>```) (sid, system_user, full_name, user_id and user_image). Note that session data is maintained for subsequent request, so there is no need to suppy username and password again for subsequent requests.
 
 ```cs
-frappe.UseTokenAync("email-or-username", "password");
+var cookies = await frappe.UsePasswordAync("email-or-username", "password");
+Console.WriteLine(cookies[Cookies.FieldNames.UserId]); // Administrator
 ```
 
 #### 3. Access Token 

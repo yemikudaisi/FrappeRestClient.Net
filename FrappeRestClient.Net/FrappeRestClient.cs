@@ -5,9 +5,12 @@
 namespace Frappe.Net
 {
     using System;
+    using System.Collections.Generic;
+    using System.Linq;
     using System.Net.Http;
     using System.Security.Authentication;
     using System.Threading.Tasks;
+    using global::FrappeRestClient.Net;
     using global::FrappeRestClient.Net.Authorization;
     using log4net;
     using log4net.Config;
@@ -27,6 +30,7 @@ namespace Frappe.Net
         private bool isToken;
         private bool isAccessToken;
         private Db db;
+        private IDictionary<string, string> loginCookies;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FrappeRestClient"/> class.
@@ -43,6 +47,7 @@ namespace Frappe.Net
             }
 
             this.db = new Db(this);
+            this.LoginCookies = EmptyLoginCookies;
             BasicConfigurator.Configure();
         }
 
@@ -61,6 +66,23 @@ namespace Frappe.Net
         /// </summary>
         /// <see cref="TinyRestClient"/>
         public TinyRestClient Client { get => this.client; set => this.client = value; }
+
+        private static IDictionary<string, string> EmptyLoginCookies
+        {
+            get
+            {
+                return new Dictionary<string, string>
+            {
+                { Cookies.FieldNames.Sid, string.Empty },
+                { Cookies.FieldNames.SystemUser, string.Empty },
+                { Cookies.FieldNames.FullName, string.Empty },
+                { Cookies.FieldNames.UserId, string.Empty },
+                { Cookies.FieldNames.UserImage, string.Empty },
+            };
+            }
+        }
+
+        public IDictionary<string, string> LoginCookies { get => loginCookies; set => loginCookies = value; }
 
         /// <summary>
         /// Changes the route from the default route
@@ -185,13 +207,22 @@ namespace Frappe.Net
         /// <param name="email">Username or email.</param>
         /// <param name="password">user password.</param>
         /// <returns>The current instance of FrappeRestClient for fluent code.</returns>
-        public async Task<FrappeRestClient> UsePasswordAsync(string email, string password)
+        public async Task<IDictionary<string, string>> UsePasswordAsync(string email, string password)
         {
             this.ClearAuthorization();
             try
             {
-                await this.client.PostRequest("login", new EmailPasswordPair() { usr = email, pwd = password })
-                    .ExecuteAsStringAsync();
+                var reponseMessage = await this.client.PostRequest("login", new EmailPasswordPair() { usr = email, pwd = password })
+                    .ExecuteAsHttpResponseMessageAsync();
+                var cookiesList = new List<string>();
+                IEnumerable<string> messageCookies = reponseMessage.Headers
+                    .SingleOrDefault(header => header.Key == "Set-Cookie").Value;
+                foreach (var cookie in messageCookies)
+                {
+                    cookiesList.Add(cookie.Split(';')[0]);
+                }
+
+                this.ParseLoginCookies(cookiesList);
             }
             catch (HttpException e)
             {
@@ -210,7 +241,7 @@ namespace Frappe.Net
 
             this.isPassword = true;
             this.isAuthenticated = true;
-            return this;
+            return this.LoginCookies;
         }
 
         /// <summary>
@@ -240,6 +271,20 @@ namespace Frappe.Net
         {
             var response = await this.client.GetRequest("frappe.ping").ExecuteAsStringAsync();
             return this.ToObject(response).message.ToString();
+        }
+
+        /// <summary>
+        /// Parse login cookies from list.
+        /// </summary>
+        /// <param name="cookiesList">The list contain key-value pair of cookies.</param>
+        private void ParseLoginCookies(List<string> cookiesList)
+        {
+            foreach (var c in cookiesList)
+            {
+                var key = c.Split('=')[0];
+                var val = c.Split('=')[1] ?? string.Empty;
+                this.LoginCookies[key] = System.Uri.UnescapeDataString(val);
+            }
         }
 
         /// <summary>
