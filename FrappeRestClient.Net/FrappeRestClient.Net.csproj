@@ -5,13 +5,11 @@
     <Company>Yemi Kudaisi</Company>
     <Description>.Net REST client for Frappe Framework</Description>
     <Copyright>Copyright © 2021</Copyright>
-    <PackageLicenseFile>C:\Users\aking\source\repos\FrappeRestClient.Net\LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/yemikudaisi/FrappeRestClient.Net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/yemikudaisi/FrappeRestClient.Net</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>api,rest,api-client,frappe-framework</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <AssemblyVersion>1.0.2</AssemblyVersion>
     <FileVersion>1.0.2</FileVersion>
     <TargetFramework>netcoreapp2.0</TargetFramework>
