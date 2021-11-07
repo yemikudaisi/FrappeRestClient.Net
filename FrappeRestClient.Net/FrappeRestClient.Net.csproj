@@ -1,27 +1,31 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
     <Authors>Yemi Kudaisi</Authors>
     <Company>Yemi Kudaisi</Company>
     <Description>.Net REST client for Frappe Framework</Description>
     <Copyright>Copyright © 2021</Copyright>
-    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageLicenseFile>C:\Users\aking\source\repos\FrappeRestClient.Net\LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/yemikudaisi/FrappeRestClient.Net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/yemikudaisi/FrappeRestClient.Net</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>api,rest,api-client,frappe-framework</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyVersion>1.0.2</AssemblyVersion>
+    <FileVersion>1.0.2</FileVersion>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Version>1.0.1</Version>
     <DocumentationFile>C:\Users\aking\source\repos\Frappe.Net\src\FrappeRestClient.Net\Frappe.Net.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.12" />
+    <PackageReference Include="NETStandard.Library" Version="2.0.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
