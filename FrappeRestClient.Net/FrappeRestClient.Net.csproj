@@ -8,12 +8,17 @@
     <PackageProjectUrl>https://github.com/yemikudaisi/FrappeRestClient.Net</PackageProjectUrl>
     <RepositoryUrl>https://github.com/yemikudaisi/FrappeRestClient.Net</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
-    <PackageTags>api,rest,api-client,frappe-framework</PackageTags>
+    <PackageTags>api,rest;api-client;frappe-framework</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>1.0.2</AssemblyVersion>
-    <FileVersion>1.0.2</FileVersion>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
-    <Version>1.0.2</Version>
+    <AssemblyVersion>1.0.2.1</AssemblyVersion>
+    <FileVersion>1.0.2.1</FileVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Version>1.0.2.1</Version>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
+    <DocumentationFile>FrappeRestClient.Net</DocumentationFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -23,6 +28,7 @@
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="2.0.12" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
     <PackageReference Include="NETStandard.Library" Version="2.0.3" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
@@ -35,6 +41,10 @@
     <None Include="..\LICENSE">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
+    </None>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
 
