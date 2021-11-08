@@ -11,10 +11,10 @@
     <RepositoryType>Git</RepositoryType>
     <PackageTags>api,rest;api-client;frappe-framework</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <AssemblyVersion>1.0.2.2</AssemblyVersion>
-    <FileVersion>1.0.2.2</FileVersion>
+    <AssemblyVersion>1.0.2.3</AssemblyVersion>
+    <FileVersion>1.0.2.3</FileVersion>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <Version>1.0.2.2</Version>
+    <Version>1.0.2.3</Version>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <DocumentationFile>FrappeRestClient.Net</DocumentationFile>
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <Version>1.0.1</Version>
+    <Version>1.0.2.3</Version>
     <DocumentationFile>C:\Users\aking\source\repos\Frappe.Net\src\FrappeRestClient.Net\Frappe.Net.xml</DocumentationFile>
   <PackageReleaseNotes>RELEASE-NOTES.MD</PackageReleaseNotes>
   </PropertyGroup>
