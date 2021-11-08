@@ -8,7 +8,7 @@ namespace Frappe.Net.Test
     public class BaseTest
     {
         protected IConfiguration config;
-        private FrappeRestClient frappe;
+        private FrappeRestClient.Net.FrappeRestClient frappe;
         public BaseTest()
         {
             config =
@@ -16,11 +16,11 @@ namespace Frappe.Net.Test
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json", false)
                     .Build();
-            frappe = new FrappeRestClient(config["baseUrl"], true)
+            frappe = new FrappeRestClient.Net.FrappeRestClient(config["baseUrl"], true)
                 .SetToken(config["apiKey"], config["apiSecret"]);
         }
 
-        public FrappeRestClient Frappe
+        public FrappeRestClient.Net.FrappeRestClient Frappe
         {
             get { return frappe; }
         }

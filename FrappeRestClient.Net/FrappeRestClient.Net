@@ -55,7 +55,7 @@
             Gets the user image path cookie image.
             </summary>
         </member>
-        <member name="T:Frappe.Net.Db">
+        <member name="T:FrappeRestClient.Net.Db">
             <summary>
             Use the Db class to carry out Frappe database related requests
             It usually accessible through an existing Frappe instance.
@@ -71,16 +71,16 @@
             int count = await Frappe.Db.GetCountAync("ToDo");
             </code>
             </example>
-            <seealso cref="T:Frappe.Net.FrappeRestClient"/>
+            <seealso cref="T:FrappeRestClient.Net.FrappeRestClient"/>
         </member>
-        <member name="M:Frappe.Net.Db.#ctor(Frappe.Net.FrappeRestClient)">
+        <member name="M:FrappeRestClient.Net.Db.#ctor(FrappeRestClient.Net.FrappeRestClient)">
             <summary>
-            Initializes a new instance of the <see cref="T:Frappe.Net.Db"/> class.
+            Initializes a new instance of the <see cref="T:FrappeRestClient.Net.Db"/> class.
             Use the Frappe client to make REST requests to a frappe site.
             </summary>
             <param name="frappe">An instance of the Frappe client.</param>
         </member>
-        <member name="M:Frappe.Net.Db.GetListAsync(System.String,System.String[],System.String[0:,0:],System.String,System.Int32,System.Int32,System.String,System.Boolean,System.Boolean)">
+        <member name="M:FrappeRestClient.Net.Db.GetListAsync(System.String,System.String[],System.String[0:,0:],System.String,System.Int32,System.Int32,System.String,System.Boolean,System.Boolean)">
             <summary>
             Returns a list of records by filters, fields, ordering and limit.
             </summary>
@@ -95,7 +95,7 @@
             <param name="asDict">Tells frappe to return the document as dict which is then translated to dynamic object.</param>
             <returns>The list of documents retrieved.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.GetCountAsync(System.String,System.String[0:,0:],System.Boolean,System.Boolean)">
+        <member name="M:FrappeRestClient.Net.Db.GetCountAsync(System.String,System.String[0:,0:],System.Boolean,System.Boolean)">
             <summary>
             Gtes the counts for doctype based on filters (if applied).
             </summary>
@@ -105,7 +105,7 @@
             <param name="cache">Inicates whether the count should be cached.</param>
             <returns>The count of documents.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.GetAsync(System.String,System.String,System.String[0:,0:],System.String)">
+        <member name="M:FrappeRestClient.Net.Db.GetAsync(System.String,System.String,System.String[0:,0:],System.String)">
             <summary>
             Returns a document by name or filters.
             </summary>
@@ -115,7 +115,7 @@
             <param name="parent">The parent of the document.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation with dynamic object result.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.GetValueAsync(System.String,System.String,System.String[0:,0:],System.Boolean,System.Boolean,System.String)">
+        <member name="M:FrappeRestClient.Net.Db.GetValueAsync(System.String,System.String,System.String[0:,0:],System.Boolean,System.Boolean,System.String)">
             <summary>
             Returns a document by name or filters.
             </summary>
@@ -127,7 +127,7 @@
             <param name="parent">If name is not set, filter by these values and return the first match.</param>
             <returns>The value gotten.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.GetSingleValueAsync(System.String,System.String)">
+        <member name="M:FrappeRestClient.Net.Db.GetSingleValueAsync(System.String,System.String)">
             <summary>
             Get a value from a single-type document.
             </summary>
@@ -137,7 +137,7 @@
             operation with result containing the string representation of the value.
             </returns>
         </member>
-        <member name="M:Frappe.Net.Db.SetValueAsync(System.String,System.String,System.String,System.String)">
+        <member name="M:FrappeRestClient.Net.Db.SetValueAsync(System.String,System.String,System.String,System.String)">
             <summary>
             Set a value in a document.
             </summary>
@@ -147,28 +147,28 @@
             <param name="value">Value to be set.</param>
             <returns>The new value as dynamic object.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.InsertAsync(System.Collections.Generic.Dictionary{System.String,System.Object})">
+        <member name="M:FrappeRestClient.Net.Db.InsertAsync(System.Collections.Generic.Dictionary{System.String,System.Object})">
             <summary>
             Insert a document.
             </summary>
             <param name="doc">dictionary to be inserted.</param>
             <returns>Dynamic object with properties of the documents that were saved.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.InsertManyAsync(System.Collections.Generic.Dictionary{System.String,System.Object}[])">
+        <member name="M:FrappeRestClient.Net.Db.InsertManyAsync(System.Collections.Generic.Dictionary{System.String,System.Object}[])">
             <summary>
             Insert multiple documents.
             </summary>
             <param name="docs">List containing dictionaries to be inserted.</param>
             <returns>A list of IDs of the newly inserted documents.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.SaveAsync(System.Object)">
+        <member name="M:FrappeRestClient.Net.Db.SaveAsync(System.Object)">
             <summary>
             Update (save) an existing document.
             </summary>
             <param name="doc">Dictionary object with the properties of the document to be updated.</param>
             <returns>A dynamic object with the properties of the saved doc.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.RenameDocAsync(System.String,System.String,System.String,System.Int32)">
+        <member name="M:FrappeRestClient.Net.Db.RenameDocAsync(System.String,System.String,System.String,System.Int32)">
             <summary>
             Rename document.
             </summary>
@@ -178,14 +178,14 @@
             <param name="merge">Indicates if two documents should be merged.</param>
             <returns>New name of the document after successful rename.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.SubmitAsync(System.Collections.Generic.Dictionary{System.String,System.Object})">
+        <member name="M:FrappeRestClient.Net.Db.SubmitAsync(System.Collections.Generic.Dictionary{System.String,System.Object})">
             <summary>
             Submit a document.
             </summary>
             <param name="doc">JSON or dict object to be submitted remotely.</param>
             <returns>The submitted document.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.CancelAsync(System.String,System.String)">
+        <member name="M:FrappeRestClient.Net.Db.CancelAsync(System.String,System.String)">
             <summary>
             Cancel a document.
             </summary>
@@ -193,7 +193,7 @@
             <param name="name">Name of the document.</param>
             <returns>The document that was cencelled.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.DeleteAsync(System.String,System.String)">
+        <member name="M:FrappeRestClient.Net.Db.DeleteAsync(System.String,System.String)">
             <summary>
             Delete a remote document.
             </summary>
@@ -201,7 +201,7 @@
             <param name="name">Name of the document to be deleted.</param>
             <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="M:Frappe.Net.Db.AttachFileAsync(System.String,System.Byte[],System.String,System.String,System.String,System.Boolean,System.String)">
+        <member name="M:FrappeRestClient.Net.Db.AttachFileAsync(System.String,System.Byte[],System.String,System.String,System.String,System.Boolean,System.String)">
              <summary>
              Attach a file to Document.
              </summary>
@@ -215,55 +215,60 @@
              <param name="docField">field to attach to (optional).</param>
              <returns>A <see cref="T:System.Threading.Tasks.Task"/> representing the asynchronous operation.</returns>
         </member>
-        <member name="T:Frappe.Net.FrappeRestClient">
+        <member name="T:FrappeRestClient.Net.FrappeRestClient">
             <summary>
             Entry class in to the frappe REST client
             manages all communication to the remote Frappe Framework deployment.
             </summary>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.#ctor(System.String,System.Boolean)">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.#ctor(System.String,System.Boolean)">
             <summary>
-            Initializes a new instance of the <see cref="T:Frappe.Net.FrappeRestClient"/> class.
+            Initializes a new instance of the <see cref="T:FrappeRestClient.Net.FrappeRestClient"/> class.
             </summary>
             <param name="baseUrl">Base url to the frappe site.</param>
             <param name="debug">If true, Frappe will logs all requests in debug console.</param>
         </member>
-        <member name="P:Frappe.Net.FrappeRestClient.Db">
+        <member name="P:FrappeRestClient.Net.FrappeRestClient.Db">
             <summary>
             Gets the DB object.
             </summary>
         </member>
-        <member name="P:Frappe.Net.FrappeRestClient.IsAuthenticated">
+        <member name="P:FrappeRestClient.Net.FrappeRestClient.IsAuthenticated">
             <summary>
             Gets a value indicating whether the Frappe client is authenticated.
             </summary>
         </member>
-        <member name="P:Frappe.Net.FrappeRestClient.Client">
+        <member name="P:FrappeRestClient.Net.FrappeRestClient.Client">
             <summary>
             Gets or sets an instance of <see cref="T:Tiny.RestClient.TinyRestClient">TinyRestClient</see>.
             </summary>
             <see cref="T:Tiny.RestClient.TinyRestClient"/>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.ChangeRoute(System.String)">
+        <member name="P:FrappeRestClient.Net.FrappeRestClient.LoginCookies">
+            <summary>
+            Gets or sets the session cookiers generated on login.
+            </summary>
+        </member>
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.ChangeRoute(System.String)">
             <summary>
             Changes the route from the default route
             to supplied route.
             </summary>
             <param name="route">The new route for subsequent calls.</param>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.ResetRoute">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.ResetRoute">
             <summary>
             Reset the API route back to default (/api/method/).
             </summary>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.UseAccessTokenAsync(System.String)">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.UseAccessTokenAsync(System.String)">
             <summary>
             Login to Frappe sight using access token.
             </summary>
             <param name="accessToken">The apps access token.</param>
             <returns>The current instance of FrappeRestClient for fluent code.</returns>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.SetToken(System.String,System.String)">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.SetToken(System.String,System.String)">
             <summary>
             Add authorization token by default to all request headers
             whithout validation.
@@ -272,7 +277,7 @@
             <param name="apiSecret">User API secret.</param>
             <returns>The current instance of FrappeRestClient for fluent code.</returns>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.UseTokenAsync(System.String,System.String)">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.UseTokenAsync(System.String,System.String)">
             <summary>
             Adds authorization token to by default to all request headers and
             validates it by getting the current logged in user.
@@ -281,7 +286,7 @@
             <param name="apiSecret">User API secret.</param>
             <returns>The current instance of FrappeRestClient for fluent code.</returns>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.UsePasswordAsync(System.String,System.String)">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.UsePasswordAsync(System.String,System.String)">
             <summary>
             Login to a Frappe Framework site with traditional username/email
             and password.
@@ -290,45 +295,45 @@
             <param name="password">user password.</param>
             <returns>The current instance of FrappeRestClient for fluent code.</returns>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.GetLoggedUserAsync">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.GetLoggedUserAsync">
             <summary>
             Gets the currently logged user.
             </summary>
             <returns>The name of the logged in user.</returns>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.Logout">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.Logout">
             <summary>
             Logout a frappe user.
             </summary>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.PingAsync">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.PingAsync">
             <summary>
             Pings the frappe site.
             </summary>
             <returns>Returns the reponse from the Frappe site.</returns>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.ParseLoginCookies(System.Collections.Generic.List{System.String})">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.ParseLoginCookies(System.Collections.Generic.List{System.String})">
             <summary>
             Parse login cookies from list.
             </summary>
             <param name="cookiesList">The list contain key-value pair of cookies.</param>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.ClearAuthorization">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.ClearAuthorization">
             <summary>
             Clear authorization header and reset flags.
             </summary>
         </member>
-        <member name="M:Frappe.Net.FrappeRestClient.ResetFlags">
+        <member name="M:FrappeRestClient.Net.FrappeRestClient.ResetFlags">
             <summary>
             Resets all flags to false.
             </summary>
         </member>
-        <member name="T:Frappe.Net.JsonObjectParser">
+        <member name="T:FrappeRestClient.Net.JsonObjectParser">
             <summary>
             Base class for classed that can convert JSOn sting to object.
             </summary>
         </member>
-        <member name="M:Frappe.Net.JsonObjectParser.ToObject(System.String)">
+        <member name="M:FrappeRestClient.Net.JsonObjectParser.ToObject(System.String)">
             <summary>
             Convets JSON string to object.
             </summary>

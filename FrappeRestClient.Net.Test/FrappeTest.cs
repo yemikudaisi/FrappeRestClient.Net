@@ -27,7 +27,7 @@ namespace Frappe.Net.Test
             bool exceptionThrowed = false;
             try
             {
-                var frappe = new FrappeRestClient(config["baseUrl"]);
+                var frappe = new FrappeRestClient.Net.FrappeRestClient(config["baseUrl"]);
                 await frappe.UsePasswordAsync("wrong", "details");
             }
             catch (AuthenticationException)
@@ -40,7 +40,7 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestIfCorrectLoginAsync()
         {
-            var frappe = new FrappeRestClient(config["baseUrl"]);
+            var frappe = new FrappeRestClient.Net.FrappeRestClient(config["baseUrl"]);
             await frappe.UsePasswordAsync(config["regularUser"], config["regularPassword"]);
             var user = await frappe.GetLoggedUserAsync();
             Assert.AreEqual(config["regularUser"], user);
@@ -49,7 +49,7 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestIfCorrectLoginCookiesAsync()
         {
-            var frappe = new FrappeRestClient(config["baseUrl"]);
+            var frappe = new FrappeRestClient.Net.FrappeRestClient(config["baseUrl"]);
             var cookies = await frappe.UsePasswordAsync(config["regularUser"], config["regularPassword"]);
             Assert.AreEqual(config["regularUser"], cookies[Cookies.FieldNames.UserId]);
         }
@@ -60,7 +60,7 @@ namespace Frappe.Net.Test
             bool exceptionThrowed = false;
             try
             {
-                var frappe = new FrappeRestClient(config["baseUrl"]);
+                var frappe = new FrappeRestClient.Net.FrappeRestClient(config["baseUrl"]);
                 await frappe.UseTokenAsync("secret", "key");
             }
             catch (AuthenticationException)
@@ -73,7 +73,7 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestIfCorrectTokenAsync()
         {
-            var frappe = new FrappeRestClient(config["baseUrl"]);
+            var frappe = new FrappeRestClient.Net.FrappeRestClient(config["baseUrl"]);
             await frappe.UseTokenAsync(config["apiKey"], config["apiSecret"]);
             var user = await frappe.GetLoggedUserAsync();
             Assert.AreEqual("Administrator", user);
@@ -82,7 +82,7 @@ namespace Frappe.Net.Test
         [TestMethod]
         public async Task TestIsLoggedOutAsync()
         {
-            var frappe = new FrappeRestClient(config["baseUrl"]);
+            var frappe = new FrappeRestClient.Net.FrappeRestClient(config["baseUrl"]);
             await frappe.UseTokenAsync(config["apiKey"], config["apiSecret"]);
             frappe.Logout();
 
@@ -96,13 +96,13 @@ namespace Frappe.Net.Test
             {
                 exceptionThrown = true;
             }
-            Assert.IsTrue(exceptionThrown, $"An {nameof(Tiny.RestClient.HttpException)} must be thrown when {nameof(FrappeRestClient)} is logged out");
+            Assert.IsTrue(exceptionThrown, $"An {nameof(Tiny.RestClient.HttpException)} must be thrown when {nameof(FrappeRestClient.Net.FrappeRestClient)} is logged out");
         }
 
         [TestMethod]
         public async Task TestPing()
         {
-            var frappe = new FrappeRestClient(config["baseUrl"]);
+            var frappe = new FrappeRestClient.Net.FrappeRestClient(config["baseUrl"]);
             var response = await frappe.PingAsync();
             Assert.AreEqual("pong", response);
         }
