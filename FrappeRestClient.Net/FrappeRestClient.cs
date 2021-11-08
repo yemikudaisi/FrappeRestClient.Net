@@ -212,11 +212,17 @@ namespace FrappeRestClient.Net
             this.ClearAuthorization();
             try
             {
-                var reponseMessage = await this.client.PostRequest("login", new EmailPasswordPair() { usr = email, pwd = password })
+                var responseMessage = await this.client.PostRequest("login", new EmailPasswordPair() { usr = email, pwd = password })
                     .ExecuteAsHttpResponseMessageAsync();
+                if (responseMessage.ReasonPhrase == "UNAUTHORIZED")
+                {
+                    Debug.WriteLine($"Invalid login credential.");
+                    throw new AuthenticationException();
+                }
                 var cookiesList = new List<string>();
-                IEnumerable<string> messageCookies = reponseMessage.Headers
+                IEnumerable<string> messageCookies = responseMessage.Headers
                     .SingleOrDefault(header => header.Key == "Set-Cookie").Value;
+
                 foreach (var cookie in messageCookies)
                 {
                     cookiesList.Add(cookie.Split(';')[0]);
@@ -228,8 +234,6 @@ namespace FrappeRestClient.Net
             {
                 if (e.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
-                    var msg = "Invalid login credential";
-                    Debug.WriteLine($"{msg} >>> {e.Message}");
                     throw new AuthenticationException();
                 }
 

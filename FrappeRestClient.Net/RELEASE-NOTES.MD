@@ -1,6 +1,9 @@
+#v1.0.
+
 # v1.0.2.2
 
 - Removed log4net.
+-
 # v1.0.2.1
 
  - Migrated to .Net Standard 2.0.
