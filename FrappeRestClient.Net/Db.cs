@@ -2,12 +2,12 @@
 // Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
-namespace Frappe.Net
+namespace FrappeRestClient.Net
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Threading.Tasks;
-    using log4net;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
     using Tiny.RestClient;
@@ -31,7 +31,6 @@ namespace Frappe.Net
     public class Db : JsonObjectParser
     {
         private const string RESOURCEPATH = "/";
-        private static readonly ILog log = LogManager.GetLogger(typeof(Db));
         private FrappeRestClient frappe;
         private TinyRestClient client;
 
@@ -113,7 +112,7 @@ namespace Frappe.Net
             }
             catch (Exception e)
             {
-                log.Error(e.Message);
+                Debug.WriteLine(e.Message);
                 throw;
             }
 
@@ -245,7 +244,7 @@ namespace Frappe.Net
             }
             catch (Exception e)
             {
-                log.Error(e.Message);
+                Debug.WriteLine(e.Message);
                 throw;
             }
 
@@ -274,7 +273,7 @@ namespace Frappe.Net
             }
             catch (Exception e)
             {
-                log.Error(e.Message);
+                Debug.WriteLine(e.Message);
                 throw;
             }
 
@@ -389,7 +388,7 @@ namespace Frappe.Net
             }
             catch (HttpException e)
             {
-                log.Error($"{e.StatusCode} : {e.Message}");
+                Debug.WriteLine($"{e.StatusCode} : {e.Message}");
                 if (e.StatusCode == System.Net.HttpStatusCode.ExpectationFailed)
                 {
                     throw new InvalidOperationException("Document not saved");
@@ -397,7 +396,7 @@ namespace Frappe.Net
             }
             catch (Exception e)
             {
-                log.Error(e.Message);
+                Debug.WriteLine(e.Message);
             }
 
             this.frappe.ResetRoute();
@@ -428,7 +427,7 @@ namespace Frappe.Net
             }
             catch (HttpException e)
             {
-                log.Error($"{e.StatusCode} : {e.Message}");
+                Debug.WriteLine($"{e.StatusCode} : {e.Message}");
                 if (e.StatusCode == System.Net.HttpStatusCode.ExpectationFailed)
                 {
                     throw new InvalidOperationException("Unable to rename document");
@@ -577,7 +576,7 @@ namespace Frappe.Net
             }
             catch (Exception e)
             {
-                log.Error(e.Message);
+                Debug.WriteLine(e.Message);
                 throw;
             }
 

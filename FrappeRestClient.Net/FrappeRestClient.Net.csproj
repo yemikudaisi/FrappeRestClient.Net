@@ -25,6 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Version>1.0.1</Version>
     <DocumentationFile>C:\Users\aking\source\repos\Frappe.Net\src\FrappeRestClient.Net\Frappe.Net.xml</DocumentationFile>
+  <PackageReleaseNotes>RELEASE-NOTES.MD</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

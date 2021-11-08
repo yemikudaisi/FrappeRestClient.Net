@@ -2,7 +2,7 @@
 // Copyright (c) Yemi Kudaisi. All rights reserved.
 // </copyright>
 
-namespace Frappe.Net
+namespace FrappeRestClient.Net
 {
     using Newtonsoft.Json.Linq;
 

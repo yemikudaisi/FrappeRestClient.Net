@@ -2,18 +2,17 @@
 // Copyright (c) Yemi Kudaisi. All rights reserved.
 // </copyright>
 
-namespace Frappe.Net
+namespace FrappeRestClient.Net
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Net.Http;
     using System.Security.Authentication;
     using System.Threading.Tasks;
     using global::FrappeRestClient.Net;
     using global::FrappeRestClient.Net.Authorization;
-    using log4net;
-    using log4net.Config;
     using Tiny.RestClient;
 
     /// <summary>
@@ -22,7 +21,6 @@ namespace Frappe.Net
     /// </summary>
     public class FrappeRestClient : JsonObjectParser
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(FrappeRestClient));
         private string baseUrl;
         private TinyRestClient client;
         private bool isAuthenticated;
@@ -48,7 +46,6 @@ namespace Frappe.Net
 
             this.db = new Db(this);
             this.LoginCookies = EmptyLoginCookies;
-            BasicConfigurator.Configure();
         }
 
         /// <summary>
@@ -67,6 +64,11 @@ namespace Frappe.Net
         /// <see cref="TinyRestClient"/>
         public TinyRestClient Client { get => this.client; set => this.client = value; }
 
+        /// <summary>
+        /// Gets or sets the session cookiers generated on login.
+        /// </summary>
+        public IDictionary<string, string> LoginCookies { get => this.loginCookies; set => this.loginCookies = value; }
+
         private static IDictionary<string, string> EmptyLoginCookies
         {
             get
@@ -81,8 +83,6 @@ namespace Frappe.Net
             };
             }
         }
-
-        public IDictionary<string, string> LoginCookies { get => loginCookies; set => loginCookies = value; }
 
         /// <summary>
         /// Changes the route from the default route
@@ -229,7 +229,7 @@ namespace Frappe.Net
                 if (e.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                 {
                     var msg = "Invalid login credential";
-                    Log.Error($"{msg} >>> {e.Message}");
+                    Debug.WriteLine($"{msg} >>> {e.Message}");
                     throw new AuthenticationException();
                 }
 
